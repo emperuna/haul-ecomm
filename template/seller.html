@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Page | Ecommerce Website</title>
+  <link rel="stylesheet" href="../static/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <a href="index.html"><img src="../static/images/logo.png" width="125px"></a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="seller.html">Username</a></li>
+                </ul>
+            </nav>
+            <a href="profile.html"><img src="../static/images/profile-pic.png" width="30px" height="30px" class="profile-pic"></a>
+            <img src="../static/images/menu.png" class="menu-icon" onclick="menutoggle()">
+        </div>
+
+        <div class="banner">
+            <h1>Welcome, Seller!</h1>
+            <p>Customize your store and manage your products easily.</p>
+            <button class="customize-banner-btn" onclick="document.getElementById('banner-upload').click()">Customize Banner</button>
+            <input type="file" id="banner-upload" style="display: none;" onchange="uploadBanner(event)">
+        </div>
+
+        <div class="seller-functions">
+            <div class="function">
+                <h2>Inventory</h2>
+                <p>Customize products to your store.</p>
+                <button onclick="redirectToInventory()">Update Product</button>
+            </div>
+            <div class="function">
+                <h2>View Sales</h2>
+                <p>Check your sales and revenue.</p>
+                <button onclick="redirectToSales()">View Sales</button>
+            </div>
+            <div class="function">
+                <h2>Manage Account</h2>
+                <p>Update your account information.</p>
+                <button>Manage Account</button>
+            </div>
+        </div>
+
+        <div class="product-list">
+            <h2>Your Products</h2>
+            <table id="product-table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Product 1</td>
+                        <td>$19.99</td>
+                        <td>50</td>
+                    </tr>
+                    <tr>
+                        <td>Product 2</td>
+                        <td>$29.99</td>
+                        <td>30</td>
+                    </tr>
+                    <tr>
+                        <td>Product 3</td>
+                        <td>$39.99</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>Product 4</td>
+                        <td>$49.99</td>
+                        <td>15</td>
+                    </tr>
+                    <tr>
+                        <td>Product 5</td>
+                        <td>$59.99</td>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <td>Product 6</td>
+                        <td>$69.99</td>
+                        <td>5</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pagination"></div>
+        </div>
+
+        <h2>Top Products</h2>
+        <div class="featured-products">
+            <div class="product">
+                <img src="../static/images/product-1.jpg" alt="Product 1">
+                <h3>Product 1</h3>
+                <p>$19.99</p>
+            </div>
+            <div class="product">
+                <img src="../static/images/product-2.jpg" alt="Product 2">
+                <h3>Product 2</h3>
+                <p>$29.99</p>
+            </div>
+            <div class="product">
+                <img src="../static/images/product-3.jpg" alt="Product 3">
+                <h3>Product 3</h3>
+                <p>$39.99</p>
+            </div>
+            <div class="product">
+                <img src="../static/images/product-4.jpg" alt="Product 4">
+                <h3>Product 4</h3>
+                <p>$49.99</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="footer-col-1">
+                        <h3>Download Our App</h3>
+                        <p>Download App for Android and ios mobile phone.</p>
+                        <div class="app-logo">
+                            <img src="../static/images/play-store.png">
+                            <img src="../static/images/app-store.png">
+                        </div>
+                    </div>
+                    <div class="footer-col-2">
+                        <img src="../static/images/logo-white.png">
+                        <p>Our Purpose Is To Sustainably Make the Pleasure and Benefits of Sports Accessible to the Many.</p>
+                    </div>
+                    <div class="footer-col-3">
+                        <h3>Useful Links</h3>
+                        <ul>
+                            <li>Coupons</li>
+                            <li>Blog Post</li>
+                            <li>Return Policy</li>
+                            <li>Join Affiliate</li>
+                        </ul>
+                    </div>
+                    <div class="footer-col-4">
+                        <h3>Follow Us</h3>
+                        <ul>
+                            <li>Facebook</li>
+                            <li>Twitter</li>
+                            <li>Instagram</li>
+                            <li>Youtube</li>
+                        </ul>
+                    </div>
+                </div>
+                <hr>
+                <p class="copyright">Copyright 2023 - Ecommerce Website</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function menutoggle() {
+            var menuItems = document.getElementById("menuItems");
+            if (menuItems.style.maxHeight == "0px") {
+                menuItems.style.maxHeight = "200px";
+            } else {
+                menuItems.style.maxHeight = "0px";
+            }
+        }
+
+        // Pagination logic
+        const rowsPerPage = 5;
+        const rows = document.querySelectorAll('#product-table tbody tr');
+        const rowsCount = rows.length;
+        const pageCount = Math.ceil(rowsCount / rowsPerPage);
+        const pagination = document.querySelector('.pagination');
+
+        function displayRows(page) {
+            const start = (page - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+
+            rows.forEach((row, index) => {
+                row.style.display = (index >= start && index < end) ? '' : 'none';
+            });
+        }
+
+        function setupPagination() {
+            pagination.innerHTML = ''; // Clear existing pagination
+            for (let i = 1; i <= pageCount; i++) {
+                const span = document.createElement('span');
+                span.classList.add('page-number');
+                if (i === 1) span.classList.add('active');
+                span.textContent = i;
+                span.addEventListener('click', () => {
+                    document.querySelector('.pagination .active').classList.remove('active');
+                    span.classList.add('active');
+                    displayRows(i);
+                });
+                pagination.appendChild(span);
+            }
+        }
+
+        displayRows(1);
+        setupPagination();
+
+        // Banner upload logic
+        function uploadBanner(event) {
+            const banner = document.querySelector('.banner');
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                banner.style.backgroundImage = `url(${e.target.result})`;
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        // Redirect to inventory page
+        function redirectToInventory() {
+            window.location.href = 'inventory.html';
+        }
+
+        function redirectToSales() {
+            window.location.href = 'sales.html';
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Account | Ecommerce Website</title>
+  <link rel="stylesheet" href="../static/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <a href="index.html"><img src="../static/images/logo.png" width="125px"></a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="account.html">Account</a></li>
+                </ul>
+            </nav>
+            <a href="profile.html"><img src="../static/images/profile-pic.png" width="30px" height="30px" class="profile-pic"></a>
+            <img src="../static/images/menu.png" class="menu-icon" onclick="menutoggle()">
+        </div>
+
+        <div class="manage-account-container">
+            <h1>Manage Account</h1>
+
+            <!-- Edit Profile Section -->
+            <div class="edit-profile">
+                <h2>Edit Profile</h2>
+                <form id="edit-profile-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" placeholder="Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" placeholder="Phone Number" required>
+                    </div>
+                    <button type="submit" class="btn">Update Profile</button>
+                </form>
+            </div>
+
+            <!-- Change Password Section -->
+            <div class="change-password">
+                <h2>Change Password</h2>
+                <form id="change-password-form">
+                    <div class="form-group">
+                        <label for="current-password">Current Password</label>
+                        <input type="password" id="current-password" placeholder="Current Password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <input type="password" id="new-password" placeholder="New Password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-new-password">Confirm New Password</label>
+                        <input type="password" id="confirm-new-password" placeholder="Confirm New Password" required>
+                    </div>
+                    <button type="submit" class="btn">Change Password</button>
+                </form>
+            </div>
+
+            <!-- Manage Addresses Section -->
+            <div class="manage-addresses">
+                <h2>Manage Addresses</h2>
+                <form id="manage-addresses-form">
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" placeholder="Address" required>
+                    </div>
+                    <button type="submit" class="btn">Add Address</button>
+                </form>
+                <div class="address-list">
+                    <h3>Saved Addresses</h3>
+                    <ul>
+                        <li>123 Main St, City, Country <button class="btn">Edit</button> <button class="btn">Delete</button></li>
+                        <li>456 Another St, City, Country <button class="btn">Edit</button> <button class="btn">Delete</button></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Payment Methods Section -->
+            <div class="payment-methods">
+                <h2>Payment Methods</h2>
+                <form id="payment-methods-form">
+                    <div class="form-group">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" placeholder="Card Number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expiry-date">Expiry Date</label>
+                        <input type="text" id="expiry-date" placeholder="MM/YY" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="text" id="cvv" placeholder="CVV" required>
+                    </div>
+                    <button type="submit" class="btn">Add Payment Method</button>
+                </form>
+                <div class="payment-methods-list">
+                    <h3>Saved Payment Methods</h3>
+                    <ul>
+                        <li>**** **** **** 1234 <button class="btn">Edit</button> <button class="btn">Delete</button></li>
+                        <li>**** **** **** 5678 <button class="btn">Edit</button> <button class="btn">Delete</button></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Notification Settings Section -->
+            <div class="notification-settings">
+                <h2>Notification Settings</h2>
+                <form id="notification-settings-form">
+                    <div class="form-group">
+                        <label for="email-notifications">Email Notifications</label>
+                        <select id="email-notifications">
+                            <option>All</option>
+                            <option>Only Important</option>
+                            <option>None</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sms-notifications">SMS Notifications</label>
+                        <select id="sms-notifications">
+                            <option>All</option>
+                            <option>Only Important</option>
+                            <option>None</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">Update Settings</button>
+                </form>
+            </div>
+
+            <!-- Login Activity Section -->
+            <div class="login-activity">
+                <h2>Login Activity</h2>
+                <ul>
+                    <li>Login from IP: 192.168.1.1 on 2023-01-01 12:00</li>
+                    <li>Login from IP: 192.168.1.2 on 2023-01-02 14:00</li>
+                </ul>
+            </div>
+
+            <!-- Delete Account Section -->
+            <div class="delete-account">
+                <h2>Delete Account</h2>
+                <button class="btn delete-btn" onclick="confirmDeleteAccount()">Delete Account</button>
+            </div>
+
+            <!-- Linked Accounts Section -->
+            <div class="linked-accounts">
+                <h2>Linked Accounts</h2>
+                <button class="btn">Link Facebook</button>
+                <button class="btn">Link Google</button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="footer-col-1">
+                        <h3>Download Our App</h3>
+                        <p>Download App for Android and ios mobile phone.</p>
+                        <div class="app-logo">
+                            <img src="../static/images/play-store.png">
+                            <img src="../static/images/app-store.png">
+                        </div>
+                    </div>
+                    <div class="footer-col-2">
+                        <img src="../static/images/logo-white.png">
+                        <p>Our Purpose Is To Sustainably Make the Pleasure and Benefits of Sports Accessible to the Many.</p>
+                    </div>
+                    <div class="footer-col-3">
+                        <h3>Useful Links</h3>
+                        <ul>
+                            <li>Coupons</li>
+                            <li>Blog Post</li>
+                            <li>Return Policy</li>
+                            <li>Join Affiliate</li>
+                        </ul>
+                    </div>
+                    <div class="footer-col-4">
+                        <h3>Follow Us</h3>
+                        <ul>
+                            <li>Facebook</li>
+                            <li>Twitter</li>
+                            <li>Instagram</li>
+                            <li>Youtube</li>
+                        </ul>
+                    </div>
+                </div>
+                <hr>
+                <p class="copyright">Copyright 2023 - Ecommerce Website</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function menutoggle() {
+            var menuItems = document.getElementById("menuItems");
+            if (menuItems.style.maxHeight == "0px") {
+                menuItems.style.maxHeight = "200px";
+            } else {
+                menuItems.style.maxHeight = "0px";
+            }
+        }
+
+        function confirmDeleteAccount() {
+            if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+                // Add account deletion logic here
+                alert("Account deleted.");
+            }
+        }
+    </script>
+</body>
+</html>
