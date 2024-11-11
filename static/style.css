@@ -44,6 +44,14 @@ nav ul li {
     border-radius: 50%;
 }
 
+/* Navbar Profile Picture */
+.navbar .profile-pic {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 /* Banner */
 .banner {
     background: url('images/seller-banner.jpg') no-repeat center center/cover;
@@ -1200,6 +1208,68 @@ form a{
     max-width: 1300px;
     margin: auto;
     padding: 50px 25px;
+    display: flex;
+}
+
+.sidebar {
+    width: 200px;
+    padding: 20px;
+    background-color: #f4f4f4;
+    margin-right: 20px;
+    transition: transform 0.3s ease;
+}
+
+.sidebar h2 {
+    font-size: 16px; /* Smaller font size */
+    margin-bottom: 3px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 3px;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 12px; /* Smaller font size */
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+}
+
+.edit-profile {
+    flex-grow: 1;
+}
+
+.sidebar-toggle {
+    display: none;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        position: absolute;
+        z-index: 1000;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .sidebar-toggle {
+        display: block;
+    }
 }
 
 .manage-account-container h1 {
@@ -1299,4 +1369,100 @@ form button:hover {
 
 .delete-btn:hover {
     background: #ff2e1a;
+}
+
+/* Profile Picture */
+.profile-pic-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.select-image-button {
+    background-color: #fff;
+    color: #333;
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.select-image-button:hover {
+    background-color: #f4f4f4;
+}
+
+/* Edit Profile Form */
+.edit-profile {
+    flex-grow: 1;
+}
+
+.edit-profile h2 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.edit-profile .form-group {
+    margin-bottom: 15px;
+}
+
+.edit-profile .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+}
+
+.edit-profile .form-group input,
+.edit-profile .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+}
+
+.edit-profile button {
+    background-color: #ff523b;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+.edit-profile button:hover {
+    background-color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        position: absolute;
+        z-index: 1000;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .sidebar-toggle {
+        display: block;
+    }
 }
