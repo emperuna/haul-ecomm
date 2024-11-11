@@ -227,13 +227,15 @@ nav ul li {
 
 /* Footer */
 .footer {
-    background: #000;
+    background-color: #333;
     color: #fff;
     padding: 60px 0 20px;
+    font-family: 'Poppins', sans-serif;
+    width: 100%;
 }
 
 .footer .container {
-    max-width: 1300px;
+    max-width: 1200px;
     margin: auto;
     padding-left: 25px;
     padding-right: 25px;
@@ -254,8 +256,9 @@ nav ul li {
     margin-bottom: 20px;
 }
 
-.footer-col-1 p, .footer-col-2 p, .footer-col-3 p, .footer-col-4 p {
-    color: #b0b0b0;
+.footer-col-1 p, .footer-col-2 p, .footer-col-3 ul, .footer-col-4 ul {
+    font-size: 14px;
+    line-height: 24px;
 }
 
 .footer-col-3 ul, .footer-col-4 ul {
@@ -268,30 +271,44 @@ nav ul li {
 }
 
 .footer-col-3 ul li a, .footer-col-4 ul li a {
-    color: #b0b0b0;
+    color: #fff;
     text-decoration: none;
 }
 
 .footer-col-3 ul li a:hover, .footer-col-4 ul li a:hover {
-    color: #fff;
+    text-decoration: underline;
 }
 
-.app-logo img {
+.footer .app-logo img {
     width: 140px;
     margin-right: 10px;
 }
 
 .footer hr {
     border: none;
-    background: #b0b0b0;
+    background-color: #fff;
     height: 1px;
     margin: 20px 0;
 }
 
-.copyright {
+.footer p {
     text-align: center;
-    color: #b0b0b0;
-    margin-top: 20px;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer .row {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-col-1, .footer-col-2, .footer-col-3, .footer-col-4 {
+        flex-basis: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+    }
 }
 
 .container{
@@ -1450,6 +1467,119 @@ form button:hover {
     background-color: #555;
 }
 
+/* Payment Methods */
+.payment-methods {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.payment-methods h2 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.payment-methods-form .form-group {
+    margin-bottom: 15px;
+}
+
+.payment-methods-form .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+}
+
+.payment-methods-form .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+}
+
+.payment-methods-form .btn {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    border-radius: 5px;
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.payment-methods-form .btn:hover {
+    background-color: #555;
+}
+
+.payment-methods-list {
+    margin-top: 30px;
+}
+
+.payment-methods-list h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.payment-methods-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.payment-methods-list ul li {
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payment-methods-list ul li .btn {
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    border-radius: 5px;
+    margin-left: 5px;
+}
+
+.payment-methods-list ul li .btn:hover {
+    background-color: #555;
+}
+
+.payment-methods-list ul li .edit-btn {
+    background-color: #4CAF50;
+}
+
+.payment-methods-list ul li .edit-btn:hover {
+    background-color: #45a049;
+}
+
+.payment-methods-list ul li .delete-btn {
+    background-color: #ff523b;
+}
+
+.payment-methods-list ul li .delete-btn:hover {
+    background-color: #ff2e1a;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .sidebar {
@@ -1464,5 +1594,228 @@ form button:hover {
 
     .sidebar-toggle {
         display: block;
+    }
+
+    .footer .row {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-col-1, .footer-col-2, .footer-col-3, .footer-col-4 {
+        flex-basis: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+}
+
+/* Payment Methods Container */
+.payment-methods-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.payment-methods, .payment-methods-list {
+    flex: 1;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.payment-methods h2, .payment-methods-list h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.payment-methods-form .form-group {
+    margin-bottom: 15px;
+}
+
+.payment-methods-form .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+}
+
+.payment-methods-form .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+}
+
+.payment-methods-form .btn {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    border-radius: 5px;
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.payment-methods-form .btn:hover {
+    background-color: #555;
+}
+
+.payment-methods-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.payment-methods-list ul li {
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payment-methods-list ul li .btn {
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    border-radius: 5px;
+    margin-left: 5px;
+}
+
+.payment-methods-list ul li .btn:hover {
+    background-color: #555;
+}
+
+.payment-methods-list ul li .edit-btn {
+    background-color: #4CAF50;
+}
+
+.payment-methods-list ul li .edit-btn:hover {
+    background-color: #45a049;
+}
+
+.payment-methods-list ul li .delete-btn {
+    background-color: #ff523b;
+}
+
+.payment-methods-list ul li .delete-btn:hover {
+    background-color: #ff2e1a;
+}
+
+/* Footer */
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 60px 0 20px;
+    font-family: 'Poppins', sans-serif;
+    width: 100%;
+}
+
+.footer .container {
+    max-width: 1200px;
+    margin: auto;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.footer .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.footer-col-1, .footer-col-2, .footer-col-3, .footer-col-4 {
+    flex-basis: 25%;
+    padding: 10px;
+}
+
+.footer-col-1 h3, .footer-col-2 h3, .footer-col-3 h3, .footer-col-4 h3 {
+    margin-bottom: 20px;
+}
+
+.footer-col-1 p, .footer-col-2 p, .footer-col-3 ul, .footer-col-4 ul {
+    font-size: 14px;
+    line-height: 24px;
+}
+
+.footer-col-3 ul, .footer-col-4 ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.footer-col-3 ul li, .footer-col-4 ul li {
+    margin-bottom: 10px;
+}
+
+.footer-col-3 ul li a, .footer-col-4 ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer-col-3 ul li a:hover, .footer-col-4 ul li a:hover {
+    text-decoration: underline;
+}
+
+.footer .app-logo img {
+    width: 140px;
+    margin-right: 10px;
+}
+
+.footer hr {
+    border: none;
+    background-color: #fff;
+    height: 1px;
+    margin: 20px 0;
+}
+
+.footer p {
+    text-align: center;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        position: absolute;
+        z-index: 1000;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .sidebar-toggle {
+        display: block;
+    }
+
+    .payment-methods-container {
+        flex-direction: column;
+    }
+
+    .footer .row {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-col-1, .footer-col-2, .footer-col-3, .footer-col-4 {
+        flex-basis: 100%;
+        text-align: center;
+        margin-bottom: 20px;
     }
 }
