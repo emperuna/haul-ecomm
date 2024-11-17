@@ -1,147 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+{% block content %}
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment Methods | Ecommerce Website</title>
-  <link rel="stylesheet" href="../static/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
+  <div class="manage-account-container">
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
 
-<body>
-  <div class="container">
-    <div class="navbar">
-      <div class="logo">
-        <a href="index.html"><img src="../static/images/logo.png" width="125px"></a>
-      </div>
-      <nav>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="products.html">Products</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="contact.html">Contact</a></li>
-          <li><a href="account.html">Account</a></li>
-        </ul>
-      </nav>
-      <a href="profile.html"><img src="../static/images/profile-pic.png" width="30px" height="30px" class="profile-pic"></a>
-      <img src="../static/images/menu.png" class="menu-icon" onclick="menutoggle()">
+    <!-- Sidebar Section -->
+    <div class="sidebar" id="sidebar">
+      <h2>My Account</h2>
+      <ul>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="payment.html">Payment Options</a></li>
+        <li><a href="addresses.html">Addresses</a></li>
+        <li><a href="change-password.html">Change Password</a></li>
+        <li><a href="privacy.html">Privacy Settings</a></li>
+        <li><a href="notification.html">Notification Settings</a></li>
+      </ul>
     </div>
 
-    <div class="manage-account-container">
-      <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-
-      <!-- Sidebar Section -->
-      <div class="sidebar" id="sidebar">
-        <h2>My Account</h2>
+    <!-- Payment Methods Section -->
+    <div class="payment-methods-container">
+      <div class="payment-methods">
+        <h2>Payment Methods</h2>
+        <form id="payment-methods-form">
+          <div class="form-group">
+            <label for="cardholder-name">Cardholder Name</label>
+            <input type="text" id="cardholder-name" placeholder="Cardholder Name" required>
+          </div>
+          <div class="form-group">
+            <label for="card-number">Card Number</label>
+            <input type="text" id="card-number" placeholder="Card Number" required>
+          </div>
+          <div class="form-group">
+            <label for="expiry-date">Expiry Date</label>
+            <input type="text" id="expiry-date" placeholder="MM/YY" required>
+          </div>
+          <div class="form-group">
+            <label for="cvv">CVV</label>
+            <input type="text" id="cvv" placeholder="CVV" required>
+          </div>
+          <div class="form-group">
+            <label for="billing-address">Billing Address</label>
+            <input type="text" id="billing-address" placeholder="Billing Address" required>
+          </div>
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" placeholder="City" required>
+          </div>
+          <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" id="state" placeholder="State" required>
+          </div>
+          <div class="form-group">
+            <label for="zip">Zip Code</label>
+            <input type="text" id="zip" placeholder="Zip Code" required>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="save-card">
+            <label for="save-card">Save this card for future use</label>
+          </div>
+          <button type="submit" class="btn">Add Payment Method</button>
+        </form>
+      </div>
+      <div class="payment-methods-list">
+        <h3>Saved Payment Methods</h3>
         <ul>
-          <li><a href="profile.html">Profile</a></li>
-          <li><a href="payment.html">Payment Options</a></li>
-          <li><a href="addresses.html">Addresses</a></li>
-          <li><a href="change-password.html">Change Password</a></li>
-          <li><a href="privacy.html">Privacy Settings</a></li>
-          <li><a href="notification.html">Notification Settings</a></li>
+          <li>**** **** **** 1234 <button class="btn edit-btn">Edit</button> <button class="btn delete-btn">Delete</button></li>
+          <li>**** **** **** 5678 <button class="btn edit-btn">Edit</button> <button class="btn delete-btn">Delete</button></li>
         </ul>
-      </div>
-
-      <!-- Payment Methods Section -->
-      <div class="payment-methods-container">
-        <div class="payment-methods">
-          <h2>Payment Methods</h2>
-          <form id="payment-methods-form">
-            <div class="form-group">
-              <label for="cardholder-name">Cardholder Name</label>
-              <input type="text" id="cardholder-name" placeholder="Cardholder Name" required>
-            </div>
-            <div class="form-group">
-              <label for="card-number">Card Number</label>
-              <input type="text" id="card-number" placeholder="Card Number" required>
-            </div>
-            <div class="form-group">
-              <label for="expiry-date">Expiry Date</label>
-              <input type="text" id="expiry-date" placeholder="MM/YY" required>
-            </div>
-            <div class="form-group">
-              <label for="cvv">CVV</label>
-              <input type="text" id="cvv" placeholder="CVV" required>
-            </div>
-            <div class="form-group">
-              <label for="billing-address">Billing Address</label>
-              <input type="text" id="billing-address" placeholder="Billing Address" required>
-            </div>
-            <div class="form-group">
-              <label for="city">City</label>
-              <input type="text" id="city" placeholder="City" required>
-            </div>
-            <div class="form-group">
-              <label for="state">State</label>
-              <input type="text" id="state" placeholder="State" required>
-            </div>
-            <div class="form-group">
-              <label for="zip">Zip Code</label>
-              <input type="text" id="zip" placeholder="Zip Code" required>
-            </div>
-            <div class="form-group">
-              <input type="checkbox" id="save-card">
-              <label for="save-card">Save this card for future use</label>
-            </div>
-            <button type="submit" class="btn">Add Payment Method</button>
-          </form>
-        </div>
-        <div class="payment-methods-list">
-          <h3>Saved Payment Methods</h3>
-          <ul>
-            <li>**** **** **** 1234 <button class="btn edit-btn">Edit</button> <button class="btn delete-btn">Delete</button></li>
-            <li>**** **** **** 5678 <button class="btn edit-btn">Edit</button> <button class="btn delete-btn">Delete</button></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- Footer Section -->
-    <div class="footer">
-      <div class="container">
-        <div class="row">
-          <div class="footer-col-1">
-            <h3>Download Our App</h3>
-            <p>Download App for Android and iOS mobile phone.</p>
-            <div class="app-logo">
-              <img src="../static/images/play-store.png" alt="Play Store">
-              <img src="../static/images/app-store.png" alt="App Store">
-            </div>
-          </div>
-          <div class="footer-col-2">
-            <img src="../static/images/logo-white.png" alt="Logo">
-            <p>Our Purpose Is To Sustainably Make the Pleasure and Benefits of Sports Accessible to the Many.</p>
-          </div>
-          <div class="footer-col-3">
-            <h3>Useful Links</h3>
-            <ul>
-              <li><a href="#">Coupons</a></li>
-              <li><a href="#">Blog Post</a></li>
-              <li><a href="#">Return Policy</a></li>
-              <li><a href="#">Join Affiliate</a></li>
-            </ul>
-          </div>
-          <div class="footer-col-4">
-            <h3>Follow Us</h3>
-            <ul>
-              <li><a href="#">Facebook</a></li>
-              <li><a href="#">Twitter</a></li>
-              <li><a href="#">Instagram</a></li>
-              <li><a href="#">YouTube</a></li>
-            </ul>
-          </div>
-        </div>
-        <hr>
-        <p class="copyright">Copyright 2023 - Ecommerce Website</p>
       </div>
     </div>
   </div>
 
-  <script src="../js/script.js"></script>
-</body>
-
-</html>
+ {% endblock %}

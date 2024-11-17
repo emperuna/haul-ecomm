@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, current_user, UserMixin, logout_user
 from werkzeug.utils import secure_filename
 import os
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.config['UPLOAD_FOLDER'] = 'static/upload' #DITO YON
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -14,6 +14,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'account'  # Redirect to the login page if not logged in
 
+#-------------------------PANG GENERATE LANG NG PASS NG SUPERADMIN
+# hashed_password = generate_password_hash('admin123')
+# print(hashed_password)
 
 def create_connection():
     connection = None
@@ -33,11 +36,12 @@ def create_connection():
 
 #User class now inherits from UserMixin (provides default behavior)
 class User(UserMixin):
-    def __init__(self, id, email, username, password):
+    def __init__(self, id, email, username, password, role):
         self.id = id
         self.email = email
         self.username = username
         self.password = password
+        self.role = role
 
     @staticmethod
     def get_by_email(email):
@@ -51,7 +55,8 @@ class User(UserMixin):
                     user_data['id'], 
                     user_data['email'], 
                     user_data['username'], 
-                    user_data['password']
+                    user_data['password'],
+                    user_data['role']
                 )
             return None
         finally:
@@ -70,7 +75,8 @@ class User(UserMixin):
                     user_data['id'], 
                     user_data['email'], 
                     user_data['username'], 
-                    user_data['password']
+                    user_data['password'],
+                    user_data['role']
                 )
             return None
         finally:
@@ -89,9 +95,9 @@ def allowed_file(filename): #para ito sa mga file na iuupload hinahati nya ung i
 def index():
     return render_template('index.html', user=current_user)
 
-@app.route('/index.html')
+@app.route('/')
 def home():
-    return render_template('index.html', user=current_user)
+    return render_template('index.html')
 
 @app.route('/products.html')
 def products():
@@ -203,6 +209,37 @@ def register():
 
     return redirect(url_for('account'))
 
+# @app.route('/login', methods=['POST'])
+# def login():
+#     username = request.form['username']
+#     password = request.form['password']
+    
+#     connection = create_connection()
+#     if connection is None:
+#         flash('Database connection failed!')
+#         return redirect(url_for('account'))
+
+#     cursor = connection.cursor()
+    
+#     try:
+#         cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+#         user = cursor.fetchone()
+        
+#         if user and check_password_hash(user[3], password):  # Check password
+#             user_obj = User(user[0], user[1], user[2], user[3],user[4])  # Create user object
+#             login_user(user_obj)  # Log the user in using Flask-Login
+#             flash('Login successful!', category='success')
+#             return redirect(url_for('index'))
+#         else:
+#             flash('Invalid credentials!')
+#     except Error as e:
+#         flash(f"An error occurred: {e}")
+#     finally:
+#         cursor.close()
+#         connection.close()
+
+#     return redirect(url_for('account'))  # Redirect back to account page if login fails
+
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form['username']
@@ -218,21 +255,29 @@ def login():
     try:
         cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
         user = cursor.fetchone()
+        print(user)
         
         if user and check_password_hash(user[3], password):  # Check password
-            user_obj = User(user[0], user[1], user[2], user[3])  # Create user object
+            user_obj = User(user[0], user[1], user[2], user[3], user[4])  # Create user object
             login_user(user_obj)  # Log the user in using Flask-Login
-            flash('Login successful!', category='success')
-            return redirect(url_for('index'))
+            
+            # Check if the user is a superadmin and redirect accordingly
+            if user_obj.role == 'superadmin':  # Assuming 'superadmin' is the role for admin users
+                flash('Logged in as Superadmin!', category='success')
+                return redirect(url_for('superadmin'))  # Redirect to superadmin dashboard
+            else:
+                flash('Login successful!', category='success')
+                return redirect(url_for('index'))  # Redirect to the regular user home page
+
         else:
-            flash('Invalid credentials!')
+            flash('Invalid credentials!', category= 'danger')
     except Error as e:
         flash(f"An error occurred: {e}")
     finally:
         cursor.close()
         connection.close()
 
-    return redirect(url_for('account'))  # Redirect back to account page if login fails
+    return redirect(url_for('account'))
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -294,10 +339,47 @@ def profile():
 
 @app.route('/logout')
 def logout():
-     logout_user()  # This will log the user out
-     flash('You have been logged out.')
-     return redirect(url_for('index'))  # Redirect to the home page after logout
+    logout_user()  # This will log the user out
+    flash('You have been logged out.')
+    return redirect(url_for('index'))  # Redirect to the home page after logout
 
+# Sell product function (ross)
+@app.route('/sell_product')
+def sell_product():
+    if request.method == 'POST':
+        product_name = request.method('product-name')
+        price = request.method('product-price')
+        quantity = request.method('product-quantity')
+        category = request.method('product-category')
+        description = request.method('product-description')
+        image = request.method('product-image')
+
+    connection = create_connection()
+    if connection == None:
+        flash('Error Connecting to Database')
+        return redirect ('profile.html')
+    
+    else:
+        cursor = connection.cursor()
+        try:
+            cursor.execute(
+                'INSERT INTO products(product_name, price, quantity, category, description, image) VALUES (%s, %s, %s, %s, %s, %s)',
+                (product_name, price, quantity, category, description, image)
+            )
+            connection.commit()
+
+        except mysql.connector.Error as err:
+            pass
+        finally:
+            cursor.close()
+            connection.close()
+# Sell product function (ross)
+
+
+
+@app.route('/superadmin') #-------jose
+def superadmin():
+    return render_template('superadmin.html') 
 
 
 # Start the Flask app

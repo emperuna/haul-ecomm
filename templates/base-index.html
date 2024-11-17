@@ -145,47 +145,60 @@
   {% endwith %}
 
   <header class="header">
-    <div class="top-bar">
-        <div class="top-left">
-            <a href="#">Seller Centre</a>
-            <a href="#">Start Selling</a>
-        </div>
-        <div class="top-right">
-            <a href="#">
-                <i class="fas fa-bell"></i>
-                Notifications
-            </a>
-            <a href="#">
-                <i class="fas fa-question-circle"></i>
-                Help
-            </a>
-            <a href="#">
-                <i class="fas fa-globe"></i>
-                English
-            </a>
-            <div class="auth-buttons">
-              <a href="{{ url_for('account') }}">Sign Up</a>
-              <a href="{{ url_for('account') }}">Login</a>
+    <div class="container">
+      <div class="top-bar">
+          <div class="top-left">
+              <a href="#">Seller Centre</a>
+              <a href="#">Start Selling</a>
           </div>
-        </div>
-    </div>
-    <nav class="main-nav">
-        <a href="{{ url_for('home') }}" class="logo">haul.</a>
-        <div class="search-container">
-            <div class="search-box">
-                <input type="text" class="search-input" placeholder="Barenbliss Exclusive Launch">
-                <button class="search-button">
-                    <i class="fas fa-search"></i>
-                </button>
+          <div class="top-right">
+              <a href="#">
+                  <i class="fas fa-bell"></i>
+                  Notifications
+              </a>
+              <a href="#">
+                  <i class="fas fa-question-circle"></i>
+                  Help
+              </a>
+              <a href="#">
+                  <i class="fas fa-globe"></i>
+                  English
+              </a>
+              <div class="auth-buttons">
+                <a href="{{ url_for('account') }}">Sign Up</a>
+                <a href="{{ url_for('account') }}">Login</a>
             </div>
+          </div>
+      </div>
+      <nav class="main-nav">
+          <a href="{{ url_for('home') }}" class="logo">haul.</a>
+          <div class="search-container">
+              <div class="search-box">
+                  <input type="text" class="search-input" placeholder="Barenbliss Exclusive Launch">
+                  <button class="search-button">
+                      <i class="fas fa-search"></i>
+                  </button>
+              </div>
+          </div>
+          <div class="cart-icon">
+            <a href="{{ url_for('cart') }}" class="cart-icon">
+              <i class="fas fa-shopping-cart"></i>
+              <span class="cart-badge">11</span>
+          </a>
+          </div>
+      </nav>
+      <div class="row">
+        <div class="col-2">
+            <h1>No To Fast Fashion <br> Shop Secondhand</h1>
+            <p>Fashion retails add new styles at incredidibly <br> cheap prices. Normalizing
+                overconsumption </p>
+            <a href="{ url_for('product') }" class="btn">Explore Now &#8594;</a>
         </div>
-        <div class="cart-icon">
-          <a href="{{ url_for('cart') }}" class="cart-icon">
-            <i class="fas fa-shopping-cart"></i>
-            <span class="cart-badge">11</span>
-        </a>
+        <div class="col-2">
+            <img src="{{url_for('static',filename = 'images/image1.png')}}">
         </div>
-    </nav>
+      </div>
+  </div>
 </header>
 
 
@@ -246,4 +259,5 @@
     }
   </script>
 </body>
+
 </html>
