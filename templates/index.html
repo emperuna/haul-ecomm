@@ -1,315 +1,74 @@
-{% extends 'base-index.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                {% if category == 'error' %}
-                    <div class="alert alert-danger alert-dismissable fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% else %}
-                    <div class="alert alert-success alert-dismissable fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
 
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="container">
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-2">
+                    <small>Discover the latest in urban fashion</small>
+                    <h1>BE YOUR OWN<br>STYLE</h1>
+                    <p>Redefine your wardrobe with streetwear that speaks your style. Explore bold, urban looks crafted for trendsetters like you!</p>
+                    <a href="{{ url_for('products') }}" class="btn">Shop Now</a>
+                    <a href="#" class="btn secondary-btn">Learn More</a>
+                    <p class="social-proof">Join 10,000+ satisfied customers worldwide!</p>
+                </div>
+                <!-- Right Column -->
+                <div class="col-2">
+                    <img src="{{url_for('static',filename = 'images/streetwear-hero.jpg')}}" alt="Streetwear Model showcasing modern urban fashion">
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Featured Categories -->
-    <div class="categories">
-        <div class="small-container">
-            <div class="row">
-                <div class="col-3">
-                    <img src="{{url_for('static',filename = 'images/category-1.jpg')}}">
+    <section class="categories">
+        <div class="categories-container">
+            <div class="categories-row">
+                <div class="categories-item">
+                    <div class="category-overlay">
+                        <p class="overlay-text">Discover the latest in streetwear fashion. Bold, urban, and unapologetic styles that make a statement.</p>
+                    </div>
+                    <img src="{{url_for('static',filename = 'images/streetwear1.jpg')}}" alt="Streetwear 1">
                 </div>
-                <div class="col-3">
-                    <img src="{{url_for('static',filename = 'images/category-2.jpg')}}">
+                <div class="categories-item">
+                    <div class="category-overlay">
+                        <p class="overlay-text">Explore trendy streetwear looks. From oversized hoodies to unique sneakers, stay ahead of the fashion curve.</p>
+                    </div>
+                    <img src="{{url_for('static',filename = 'images/streetwear2.jpg')}}" alt="Streetwear 2">
                 </div>
-                <div class="col-3">
-                    <img src="{{url_for('static',filename = 'images/category-3.jpg')}}">
+                <div class="categories-item">
+                    <div class="category-overlay">
+                        <p class="overlay-text">Step into the world of streetwear. Where comfort meets style, and fashion is limitless.</p>
+                    </div>
+                    <img src="{{url_for('static',filename = 'images/streetwear3.jpg')}}" alt="Streetwear 3">
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+  
 
-    <!-- Featured Products -->
-    <div class="small-container">
-        <h2 class="title">Featured Products</h2>
-        <div class="row">
-            <div class="col-4">
-                <a href="product_details.html"><img src="{{url_for('static',filename = 'images/product-1.jpg')}}"></a>
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-2.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-3.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-4.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-        </div>
-        <!-- Latest Products Section -->
-        <h2 class="title">Latest Products</h2>
-        <div class="row">
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-5.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-2.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-3.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-4.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-        </div>
-        <h2 class="title">Latest Products</h2>
-        <div class="row">
-            <div class="col-4">
-                <img src="../static/images/product-5.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-6.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-7.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-8.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <img src="../static/images/product-9.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-10.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-11.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-12.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Offer Section -->
+    <!-- Small Information -->
     <div class="offer">
         <div class="small-container">
             <div class="row">
                 <div class="col-2">
-                    <img src="{{url_for('static',filename = 'images/exclusive.png')}}" class="offer-img">
+                    <img src="{{url_for('static',filename = 'images/streetwear-background2.jpg')}}" class="offer-img" alt="Streetwear Offer">
                 </div>
                 <div class="col-2">
-                    <p>Exclusively Available on RedStore</p>
-                    <h1>Smart Band 4</h1>
-                    <small>The Mi Smart Band 4 fearures a 39.9%larger (than Mi Band 3) AMOLED color full-touch display
-                        with adjustable brightness, so everything is clear as can be.<br></small>
-                    <a href="products.html" class="btn">Buy Now &#8594;</a>
+                    <h1>Why Choose Us?</h1>
+                    <small>
+                        Explore a curated collection of premium streetwear, sourced from top brands, at unbeatable prices. 
+                        Each piece tells a story, and with our exclusive online collection, you’ll stand out with a sustainable style.
+                    </small>
+                    <a href="/products" class="btn">Buy Now &#8594;</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Testimonial Section -->
-    <div class="testimonial">
-        <div class="small-container">
-            <div class="row">
-                <div class="col-3">
-                    <i class="fa fa-quote-left"></i>
-                    <p>Great service and affordable prices!</p>
-                    <div class="rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                    </div>
-                    <img src="{{url_for('static',filename = 'images/jose-pic.jpg')}}">
-                    <h3>Jose Aquino</h3>
-                </div>
-                <div class="col-3">
-                    <i class="fa fa-quote-left"></i>
-                    <p>Great service and affordable prices!</p>
-                    <div class="rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                    </div>
-                    <img src="{{url_for('static',filename = 'images/jeremy-pic.jpg')}}">
-                    <h3>Jeremy Garin</h3>
-                </div>
-                <div class="col-3">
-                    <i class="fa fa-quote-left"></i>
-                    <p>Great service and affordable prices!</p>
-                    <div class="rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                    </div>
-                    <img src="{{url_for('static',filename = 'images/ross-pic.jpg')}}">
-                    <h3>Ross Cedric Nazareno</h3>
-                </div>
-            </div>    
-        </div>
-    </div>
 
     <!-- Brands Section -->
     <div class="brands">

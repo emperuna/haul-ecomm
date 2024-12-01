@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Application Pending</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/waiting-approval.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        // Redirect to the index page after 5 seconds with a smooth transition
+        setTimeout(function() {
+            window.location.href = '/';  // Redirect to index (home page)
+        }, 5000);
+    </script>
+</head>
+<body>
+    <div class="background-blur"></div>
+    <div class="background-overlay"></div>
+    <div class="approval-container">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Company Logo" class="logo">
+        <h2>Your seller application is pending approval.</h2>
+        <p>We are currently reviewing your application. You will be notified once it has been approved.</p>
+        <p>You will be redirected to the home page shortly...</p>
+        <a href="{{ url_for('contact') }}" class="contact-link">Contact Support</a>
+    </div>
+</body>
+</html>

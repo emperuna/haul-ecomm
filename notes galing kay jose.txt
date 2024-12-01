@@ -1,0 +1,32 @@
+---------------------------------------------------------------11/29/2024
+
+///dagdagan nyo database nyo neto 
+
+ALTER TABLE products
+ADD COLUMN product_subcategory VARCHAR(255) AFTER product_category;
+
+///pero di pa ayos hahahah dinagdagan ko ng filter 
+
+
+----------------NAGKARON NA NG SEARCH-------------11/30/2024
+
+IDADAGDAG SA DATABASE:
+
+ALTER TABLE products ADD FULLTEXT(product_name, product_description);
+
+///may search na yan tas filter tsaka sorting. palagyan ng frontend nalang
+
+MGA LALAGYAN NI JEM NG FRONTEND:
+1. error.html -- fixed
+2. pending_seller.html -- fixed
+3. seller_centre.html -- wala pa
+
+///yang tatlo na yan sulat lang as in nakalagay.
+
+MGA DAPAT AUSIN SA FRONT END:
+1. ung search bar sa base. (kz may dinagdag ako na search bar sa products.html) -- in progress
+2. ung sa seller_registration.html,,, dapat ung nakaconnect na base dun ay sa user ndi ung base-seller. -- in progress
+3. at design sa other htmls pa. -- wala pa
+
+un lang thanks!!
+

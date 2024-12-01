@@ -1,239 +1,248 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base-seller.html' %}
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inventory | Ecommerce Website</title>
-  <link rel="stylesheet" href="../static/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
+{% block content %}
 
-<body>
-    <div class="container">
-        <div class="navbar">
-            <div class="logo">
-                <a href="index.html"><img src="../static/images/logo.png" width="125px"></a>
+<div class="inventory-container">
+    <h1>Inventory Management</h1>
+
+    <!-- Add Product Section -->
+    <div class="add-product">
+        <h2>Add Product</h2>
+        <form id="add-product-form" action="/add-product" method="POST" enctype="multipart/form-data">
+            <!-- Form fields for adding a product -->
+            <div class="form-group">
+                <label for="product-name">Product Name</label>
+                <input type="text" name="product-name" id="product-name" placeholder="Product Name" required>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="products.html">Products</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="account.html">Account</a></li>
-                </ul>
-            </nav>
-            <a href="profile.html"><img src="../static/images/profile-pic.png" width="30px" height="30px" class="profile-pic"></a>
-            <img src="../static/images/menu.png" class="menu-icon" onclick="menutoggle()">
-        </div>
-
-        <div class="inventory-container">
-            <h1>Inventory Management</h1>
-
-            <!-- Add Product Section -->
-            <div class="add-product">
-                <h2>Add Product</h2>
-                <form id="add-product-form">
-                    <div class="form-group">
-                        <label for="product-name">Product Name</label>
-                        <input type="text" id="product-name" placeholder="Product Name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="product-price">Price</label>
-                        <input type="number" id="product-price" placeholder="Price" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="product-quantity">Quantity</label>
-                        <input type="number" id="product-quantity" placeholder="Quantity" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="product-category">Category</label>
-                        <input type="text" id="product-category" placeholder="Category" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="product-description">Description</label>
-                        <textarea id="product-description" placeholder="Description" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="product-image">Image</label>
-                        <input type="file" id="product-image">
-                    </div>
-                    <button type="submit" class="btn">Add Product</button>
-                </form>
+            <div class="form-group">
+                <label for="product-price">Price</label>
+                <input type="number" name="product-price" id="product-price" placeholder="Price" required>
             </div>
-
-            <!-- Search and Filter Section -->
-            <div class="search-filter">
-                <input type="text" placeholder="Search Products">
-                <select>
-                    <option>Filter by Category</option>
-                    <option>Category 1</option>
-                    <option>Category 2</option>
-                </select>
-                <select>
-                    <option>Sort by</option>
-                    <option>Price</option>
-                    <option>Stock</option>
-                    <option>Product Name</option>
+            <div class="form-group">
+                <label for="product-stock">Quantity</label>
+                <input type="number" name="product-stock" id="product-stock" placeholder="Stock" required>
+            </div>
+            <div class="form-group">
+                <label for="product-category">Category</label>
+                <select name="product-category" id="product-category" required>
+                    <option value="Shirts">Shirts</option>
+                    <option value="Pants">Pants</option>
+                    <option value="Dresses">Dresses</option>
+                    <option value="Outerwear">Outerwear</option>
+                    <option value="Accessories">Accessories</option>
                 </select>
             </div>
-
-            <!-- Product Table -->
-            <div class="product-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th><input type="checkbox"></th>
-                            <th>Product Name</th>
-                            <th>Price</th>
-                            <th>Stock</th>
-                            <th>Category</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td>Product 1</td>
-                            <td>$19.99</td>
-                            <td>50</td>
-                            <td>Category 1</td>
-                            <td>
-                                <button class="btn">Edit</button>
-                                <button class="btn">Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td>Product 2</td>
-                            <td>$29.99</td>
-                            <td>30</td>
-                            <td>Category 2</td>
-                            <td>
-                                <button class="btn">Edit</button>
-                                <button class="btn">Delete</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Bulk Actions Section -->
-            <div class="bulk-actions">
-                <select>
-                    <option>Bulk Actions</option>
-                    <option>Update Stock</option>
-                    <option>Update Price</option>
-                    <option>Apply Discount</option>
+            <div class="form-group">
+                <label for="product-subcategory">Sub-category</label>
+                <select name="product-subcategory" id="product-subcategory" required>
+                    <!-- Sub-categories will be populated dynamically based on the selected category -->
                 </select>
-                <button class="btn">Apply</button>
             </div>
-
-            <!-- Low Stock Alerts Section -->
-            <div class="low-stock-alerts">
-                <h2>Low Stock Alerts</h2>
-                <p>Product 3 is low on stock. Only 5 left!</p>
+            <div class="form-group">
+                <label for="product-condition">Condition</label>
+                <select name="product-condition" id="product-condition" required>
+                    <option value="New">New</option>
+                    <option value="Like New">Like New</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Vintage">Vintage</option>
+                </select>
             </div>
-
-            <!-- Export Inventory Section -->
-            <div class="export-inventory">
-                <button class="btn">Export to CSV</button>
-                <button class="btn">Export to Excel</button>
+            <div class="form-group">
+                <label for="product-size">Size</label>
+                <input type="text" name="product-size" id="product-size" placeholder="Size (e.g., M, L, etc.)" required>
             </div>
-
-            <!-- Sales Analysis Section -->
-            <div class="sales-analysis">
-                <h2>Sales Analysis</h2>
-                <p>Sales trends and analytics for each product will be displayed here.</p>
+            <div class="form-group">
+                <label for="product-description">Description</label>
+                <textarea id="product-description" name="product-description" placeholder="Description" required></textarea>
             </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="footer-col-1">
-                        <h3>Download Our App</h3>
-                        <p>Download App for Android and ios mobile phone.</p>
-                        <div class="app-logo">
-                            <img src="../static/images/play-store.png">
-                            <img src="../static/images/app-store.png">
-                        </div>
-                    </div>
-                    <div class="footer-col-2">
-                        <img src="../static/images/logo-white.png">
-                        <p>Our Purpose Is To Sustainably Make the Pleasure and Benefits of Sports Accessible to the Many.</p>
-                    </div>
-                    <div class="footer-col-3">
-                        <h3>Useful Links</h3>
-                        <ul>
-                            <li>Coupons</li>
-                            <li>Blog Post</li>
-                            <li>Return Policy</li>
-                            <li>Join Affiliate</li>
-                        </ul>
-                    </div>
-                    <div class="footer-col-4">
-                        <h3>Follow Us</h3>
-                        <ul>
-                            <li>Facebook</li>
-                            <li>Twitter</li>
-                            <li>Instagram</li>
-                            <li>Youtube</li>
-                        </ul>
-                    </div>
-                </div>
-                <hr>
-                <p class="copyright">Copyright 2023 - Ecommerce Website</p>
+            <div class="form-group">
+                <label for="product-image">Image</label>
+                <input type="file" id="product-image" name="product-image">
             </div>
-        </div>
+            <button type="submit" class="btn">Add Product</button>
+        </form>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const lowStockThreshold = 10; // Example threshold
-            const lowStockContainer = document.querySelector('.low-stock-alerts');
+    <!-- Active Products Section -->
+    <div class="product-section">
+        <h2>Active Products</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Category</th>
+                    <th>Condition</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="active-products-body">
+                {% for product in products if product['product_status'] == 'active' %}
+                <tr>
+                    <td>{{ product['product_name'] }}</td>
+                    <td>${{ product['product_price'] }}</td>
+                    <td>{{ product['product_stock'] }}</td>
+                    <td>{{ product['product_category'] }}</td>
+                    <td>{{ product['product_condition'] }}</td>
+                    <td>{{ product['product_description'] }}</td>
+                    <td>
+                        {% if product['product_image'] %}
+                            <img src="{{ url_for('static', filename='uploads/products/' + product['product_image'].replace('\\', '/')) }}" 
+                                 alt="{{ product['product_name'] }}" width="50">
+                        {% else %}
+                            <span>No Image</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('update_product', product_id=product['product_id']) }}" class="btn btn-warning">Update</a>
+                        <form action="{{ url_for('toggle_product_status', product_id=product['product_id']) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-warning">Archive</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-            function checkLowStock() {
-                const products = [
-                    { name: "Product 1", stock: 5 },
-                    { name: "Product 2", stock: 30 },
-                    { name: "Product 3", stock: 8 },
-                ];
+    <!-- Archived Products Section -->
+    <div class="product-section">
+        <h2>Archived Products</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Category</th>
+                    <th>Condition</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="archived-products-body">
+                {% for product in products if product['product_status'] == 'archived' %}
+                <tr>
+                    <td>{{ product['product_name'] }}</td>
+                    <td>${{ product['product_price'] }}</td>
+                    <td>{{ product['product_stock'] }}</td>
+                    <td>{{ product['product_category'] }}</td>
+                    <td>{{ product['product_condition'] }}</td>
+                    <td>{{ product['product_description'] }}</td>
+                    <td>
+                        {% if product['product_image'] %}
+                            <img src="{{ url_for('static', filename='uploads/products/' + product['product_image'].replace('\\', '/')) }}" 
+                                 alt="{{ product['product_name'] }}" width="50">
+                        {% else %}
+                            <span>No Image</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('update_product', product_id=product['product_id']) }}" class="btn btn-success">Update</a>
+                        <form action="{{ url_for('toggle_product_status', product_id=product['product_id']) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-success">Unarchive</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-                products.forEach(product => {
-                    const { name: productName, stock } = product;
-                    if (stock < lowStockThreshold) {
-                        const alert = document.createElement('p');
-                        alert.textContent = `${productName} is low on stock. Only ${stock} left!`;
-                        lowStockContainer.appendChild(alert);
-                    }
-                });
-            }
+    <!-- Additional Sections at the Bottom -->
+    <!-- Bulk Actions Section -->
+    <div class="bulk-actions">
+        <select>
+            <option>Bulk Actions</option>
+            <option>Update Stock</option>
+            <option>Update Price</option>
+            <option>Apply Discount</option>
+        </select>
+        <button class="btn">Apply</button>
+    </div>
 
-            function generateSalesAnalysis() {
-                const salesAnalysisContainer = document.querySelector('.sales-analysis');
-                salesAnalysisContainer.innerHTML = '<h2>Sales Analysis</h2>';
+    <!-- Low Stock Alerts Section -->
+    <div class="low-stock-alerts">
+        <h2>Low Stock Alerts</h2>
+        <p>Product 3 is low on stock. Only 5 left!</p>
+    </div>
 
-                const salesData = [
-                    { product: "Product 1", sales: 120, revenue: 2398 },
-                    { product: "Product 2", sales: 80, revenue: 1599 },
-                    { product: "Product 3", sales: 50, revenue: 999 },
-                ];
+    <!-- Export Inventory Section -->
+    <div class="export-inventory">
+        <button class="btn">Export to CSV</button>
+        <button class="btn">Export to Excel</button>
+    </div>
 
-                salesData.forEach(data => {
-                    const analysisItem = document.createElement('p');
-                    analysisItem.textContent = `${data.product}: ${data.sales} units sold, $${data.revenue} revenue`;
-                    salesAnalysisContainer.appendChild(analysisItem);
-                });
-            }
+    <!-- Sales Analysis Section -->
+    <div class="sales-analysis">
+        <h2>Sales Analysis</h2>
+        <p>Sales trends and analytics for each product will be displayed here.</p>
+    </div>
 
-            checkLowStock();
-            generateSalesAnalysis();
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById('add-product-form');
+        const categorySelect = document.getElementById('product-category');
+        const subCategorySelect = document.getElementById('product-subcategory');
+        
+        const subCategories = {
+            'Shirts': ['Casual', 'Formal', 'Sports'],
+            'Pants': ['Jeans', 'Trousers', 'Shorts'],
+            'Dresses': ['Maxi', 'Mini', 'Midi'],
+            'Outerwear': ['Jackets', 'Coats', 'Blazers'],
+            'Accessories': ['Hats', 'Bags', 'Shoes']
+        };
+        
+        // Function to update sub-categories based on selected category
+        const updateSubCategories = () => {
+            const selectedCategory = categorySelect.value;
+            const subCategoryOptions = subCategories[selectedCategory] || [];
+            subCategorySelect.innerHTML = ''; // Clear existing options
+            subCategoryOptions.forEach(subCat => {
+                const option = document.createElement('option');
+                option.value = subCat;
+                option.textContent = subCat;
+                subCategorySelect.appendChild(option);
+            });
+        };
+
+        // Call the function initially to populate sub-categories for the default selected category
+        updateSubCategories();
+        
+        // Update sub-categories when the category changes
+        categorySelect.addEventListener('change', updateSubCategories);
+        
+        // Handle form submission using Fetch
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();  // Prevent default form submission
+
+            const formData = new FormData(form);
+
+            fetch('/add-product', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();  // Reload page after successful product addition
+                } else {
+                    alert('Failed to add product. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error adding product. Please try again.');
+            });
         });
-    </script>
-</body>
-</html>
+    });
+</script>
+
+{% endblock %}

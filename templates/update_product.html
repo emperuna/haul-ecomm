@@ -1,0 +1,55 @@
+{% extends 'base-seller.html' %}
+
+{% block content %}
+    <div class="update-product-container">
+        <h1>Update Product</h1>
+        <form action="{{ url_for('update_product', product_id=product.product_id) }}" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="product-name">Product Name</label>
+                <input type="text" name="product-name" id="product-name" value="{{ product.product_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="product-price">Price</label>
+                <input type="number" name="product-price" id="product-price" value="{{ product.product_price }}" required>
+            </div>
+            <div class="form-group">
+                <label for="product-stock">Quantity</label>
+                <input type="number" name="product-stock" id="product-stock" value="{{ product.product_stock }}" required>
+            </div>
+            <div class="form-group">
+                <label for="product-category">Category</label>
+                <select name="product-category" id="product-category" required>
+                    <option value="Shirts" {% if product.product_category == 'Shirts' %}selected{% endif %}>Shirts</option>
+                    <option value="Pants" {% if product.product_category == 'Pants' %}selected{% endif %}>Pants</option>
+                    <option value="Dresses" {% if product.product_category == 'Dresses' %}selected{% endif %}>Dresses</option>
+                    <option value="Outerwear" {% if product.product_category == 'Outerwear' %}selected{% endif %}>Outerwear</option>
+                    <option value="Accessories" {% if product.product_category == 'Accessories' %}selected{% endif %}>Accessories</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="product-condition">Condition</label>
+                <select name="product-condition" id="product-condition" required>
+                    <option value="New" {% if product.product_condition == 'New' %}selected{% endif %}>New</option>
+                    <option value="Like New" {% if product.product_condition == 'Like New' %}selected{% endif %}>Like New</option>
+                    <option value="Good" {% if product.product_condition == 'Good' %}selected{% endif %}>Good</option>
+                    <option value="Fair" {% if product.product_condition == 'Fair' %}selected{% endif %}>Fair</option>
+                    <option value="Vintage" {% if product.product_condition == 'Vintage' %}selected{% endif %}>Vintage</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="product-size">Size</label>
+                <input type="text" name="product-size" id="product-size" value="{{ product.product_size }}" required>
+            </div>
+            <div class="form-group">
+                <label for="product-description">Description</label>
+                <textarea id="product-description" name="product-description" required>{{ product.product_description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="product-image">Image</label>
+                <input type="file" id="product-image" name="product-image">
+                <p>Current Image: <img src="{{ url_for('static', filename='uploads/' ~ product.product_image) }}" width="100"></p>
+            </div>
+            <button type="submit" class="btn">Update Product</button>
+        </form>
+    </div>
+{% endblock %}

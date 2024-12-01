@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Verify OTP{% endblock %}
+
+{% block content %}
+<!-- OTP Verification Page -->
+<div class="account-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-2">
+                <img src="{{ url_for('static', filename='images/image1.png') }}" width="100%">
+            </div>
+            <div class="col-2">
+                <div class="form-container">
+                    <form id="OtpForm" method="POST" action="{{ url_for('verify_otp') }}">
+                        <input type="hidden" name="email" value="{{ email }}"> <!-- Pass the email to backend -->
+                        <input type="text" name="otp" placeholder="Enter OTP" required>
+                        <button type="submit" class="btn">Verify OTP</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

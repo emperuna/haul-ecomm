@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- Wishlist Title -->
+    <div class="small-container">
+        <div class="row row-2">
+            <h2>Your Wishlist</h2>
+        </div>
+    </div>
+
+    <!-- Wishlist Products List -->
+    <div class="row" id="wishlist-product-list">
+        {% if wishlist %}
+            {% for product in wishlist %}
+                <div class="col-4" id="wishlist-item-{{ product['wishlist_id'] }}">
+                    <!-- Link to Product Details Page -->
+                    <a href="{{ url_for('product_details', product_id=product['product_id']) }}">
+                        {% if product['product_image'] %}
+                            <img src="{{ url_for('static', filename='uploads/products/' + product['product_image']) }}" alt="{{ product['product_name'] }}"/>
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/default-product.jpg') }}" alt="No image available"/>
+                        {% endif %}
+                    </a>
+                    <h4>{{ product['product_name'] }}</h4>
+                    <p>${{ product['product_price'] }}</p>
+
+                    <!-- Remove from Wishlist Button -->
+                    <form action="{{ url_for('remove_from_wishlist', wishlist_id=product['wishlist_id']) }}" method="POST">
+                        <button type="submit" class="btn">Remove from Wishlist</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-results">
+                <p>Your wishlist is empty.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Pagination (if applicable) -->
+    <div class="page-btn">
+        <span>1</span>
+        <span>2</span>
+        <span>3</span>
+        <span>4</span>
+        <span>&#8594;</span>
+    </div>
+
+{% endblock %}

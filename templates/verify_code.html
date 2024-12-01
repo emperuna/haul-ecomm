@@ -1,0 +1,15 @@
+<!-- verify_code.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="verify-code-container">
+    <h2>Enter Verification Code</h2>
+    <form method="POST" action="{{ url_for('verify_code') }}">
+        <div class="form-group">
+            <label for="verification_code">Verification Code</label>
+            <input type="text" id="verification_code" name="verification_code" class="form-control" placeholder="Enter the verification code" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Verify Code</button>
+    </form>
+</div>
+{% endblock %}

@@ -5,290 +5,345 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RedStore | Ecommerce Website Design</title>
+    <!-- CSS Styles -->
     <link rel="stylesheet" href="../static/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: #003449;
+            padding: 10px 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .top-left {
+            display: flex;
+            gap: 15px;
+        }
+
+        .top-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 1px solid #666;
+            margin-left: 15px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .user-section:hover .dropdown-menu {
+            display: block;
+            opacity: 1; /* Ensure dropdown is visible */
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 3px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            width: 180px;
+            margin-top: 5px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .dropdown-menu a {
+            padding: 10px 15px;
+            display: block;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f5f5f5;
+            color:#333;
+        }
+
+        .profile-pic {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #666;
+            text-decoration: none;
+            margin-right: 40px;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 840px;
+            position: relative;
+        }
+
+        .search-box {
+            display: flex;
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .search-button {
+            background: #9cb2bf;
+            color: white;
+            border: none;
+            padding: 0 25px;
+            cursor: pointer;
+        }
+
+        .search-button:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .cart-icon {
+            color: #9cb2bf;
+            font-size: 24px;
+            position: relative;
+            margin-left: 40px;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            padding: 1px 6px;
+            font-size: 12px;
+        }
+
+        a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .top-bar a {
+            color: #9cb2bf;
+        }
+
+        a:hover {
+            opacity: 0.8;
+        }
+
+        /* Mobile view adjustments */
+        @media screen and (max-width: 768px) {
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .main-nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .search-container {
+                margin-top: 15px;
+                width: 100%;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .cart-icon {
+                margin-left: 0;
+                margin-top: 15px;
+            }
+
+            .logo {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+
+            .top-left a, .top-right a {
+                margin-right: 10px;
+            }
+        }
+    </style>
 </head>
+<body>
+    <header class="header">
+        <div class="top-bar">
+            <div class="top-left">
+                <a href="#">Seller Centre</a>
+                <a href="#">Start Selling</a>
+            </div>
+            <div class="top-right">
+                <a href="#">
+                    <i class="fas fa-bell"></i>
+                    Notifications
+                </a>
+                <a href="#">
+                    <i class="fas fa-question-circle"></i>
+                    Help
+                </a>
+                <a href="#">
+                    <i class="fas fa-globe"></i>
+                    English
+                </a>
+                <div class="user-section">
+                    <a href="#">emperuna</a>
+                    <div class="profile-pic">
+                        <img src="/api/placeholder/20/20" alt="Profile">
+                    </div>    
+                    <div class="dropdown-menu">
+                        <a href="manageacc.html">My Account</a>
+                        <a href="#">My Purchase</a>
+                        <a href="#">Logout</a>
+                    </div>   
+                </div>    
+            </div>
+        </div>
+        <nav class="main-nav">
+            <a href="index.html" class="logo">haul.</a>
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Barenbliss Exclusive Launch">
+                    <button class="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="cart-icon">
+            <a href="cart.html" class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge">11</span>
+            </a>
+        </nav>
+    </header>
 
-<body>   
-    <div class="header">
+    <!-- Hero Section -->
+    <div class="hero">
         <div class="container">
-            <div class="navbar">
-                <div class="logo">
-                    <a href="index.html"><img src="../static/images/haul-logo.png" alt="logo" width="125px"></a>
-                </div>
-                <nav>
-                    <ul id="MenuItems">
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="products.html">Products</a></li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                        <li><a href="account.html">Account</a></li>
-                    </ul>
-                </nav>
-                <a href="cart.html"><img src="../static/images/cart.png" width="30px" height="30px"></a>
-                <img src="../static/images/menu.png" class="menu-icon" onclick="menutoggle()">
-            </div>
             <div class="row">
+                <!-- Left Column -->
                 <div class="col-2">
-                    <h1>No To Fast Fashion <br> Shop Secondhand</h1>
-                    <p>Fashion retails add new styles at incredidibly <br> cheap prices. Normalizing
-                        overconsumption </p>
-                    <a href="" class="btn">Explore Now &#8594;</a>
+                    <small>Discover the latest in urban fashion</small>
+                    <h1>BE YOUR OWN<br>STYLE</h1>
+                    <p>Redefine your wardrobe with streetwear that speaks your style. Explore bold, urban looks crafted for trendsetters like you!</p>
+                    <a href="#" class="btn">Shop Now</a>
+                    <a href="#" class="btn secondary-btn">Learn More</a>
+                    <p class="social-proof">Join 10,000+ satisfied customers worldwide!</p>
                 </div>
+                <!-- Right Column -->
                 <div class="col-2">
-                    <img src="../static/images/image1.png">
+                    <img src="../static/images/streetwear-hero.jpg" alt="Streetwear Model showcasing modern urban fashion">
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Feadtued Categories -->
-
-    <div class="categories">
-        <div class="small-container">
-            <div class="row">
-                <div class="col-3">
-                    <img src="../static/images/category-1.jpg">
+    
+    <!-- Featured Categories -->
+    <section class="categories">
+        <div class="categories-container">
+            <div class="categories-row">
+                <div class="categories-item">
+                    <div class="category-overlay">
+                        <p class="overlay-text">Discover the latest in streetwear fashion. Bold, urban, and unapologetic styles that make a statement.</p>
+                    </div>
+                    <img src="../static/images/streetwear1.jpg" alt="Streetwear 1">
                 </div>
-                <div class="col-3">
-                    <img src="../static/images/category-2.jpg">
+                <div class="categories-item">
+                    <div class="category-overlay">
+                        <p class="overlay-text">Explore trendy streetwear looks. From oversized hoodies to unique sneakers, stay ahead of the fashion curve.</p>
+                    </div>
+                    <img src="../static/images/streetwear2.jpg" alt="Streetwear 2">
                 </div>
-                <div class="col-3">
-                    <img src="../static/images/category-3.jpg">
+                <div class="categories-item">
+                    <div class="category-overlay">
+                        <p class="overlay-text">Step into the world of streetwear. Where comfort meets style, and fashion is limitless.</p>
+                    </div>
+                    <img src="../static/images/streetwear3.jpg" alt="Streetwear 3">
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+  
 
-    <!-- Featured Products -->
-
-    <div class="small-container">
-        <h2 class="title">Featured Products</h2>
-        <div class="row">
-            <div class="col-4">
-                <a href="../static/product_details.html"><img src="../static/images/product-1.jpg"></a>
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-2.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-3.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-4.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-        </div>
-        <h2 class="title">Latest Products</h2>
-        <div class="row">
-            <div class="col-4">
-                <img src="../static/images/product-5.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-6.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-7.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-8.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <img src="../static/images/product-9.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-10.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-11.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="../static/images/product-12.jpg">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Offer -->
+    <!-- Small Information -->
     <div class="offer">
         <div class="small-container">
             <div class="row">
                 <div class="col-2">
-                    <img src="../static/images/exclusive.png" class="offer-img">
+                    <img src="../static/images/streetwear-background2.jpg" class="offer-img" alt="Streetwear Offer">
                 </div>
                 <div class="col-2">
-                    <p>Exclusively Available on RedStore</p>
-                    <h1>Smart Band 4</h1>
-                    <small>The Mi Smart Band 4 fearures a 39.9%larger (than Mi Band 3) AMOLED color full-touch display
-                        with adjustable brightness, so everything is clear as can be.<br></small>
+                    <h1>Why Choose Us?</h1>
+                    <small>
+                        Explore a curated collection of premium streetwear, sourced from top brands, at unbeatable prices. 
+                        Each piece tells a story, and with our exclusive online collection, you’ll stand out with a sustainable style.
+                    </small>
                     <a href="products.html" class="btn">Buy Now &#8594;</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Testimonial -->
-    <div class="testimonial">
-        <div class="small-container">
-            <div class="row">
-                <div class="col-3">
-                    <i class="fa fa-quote-left"></i>
-                    <p>Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
-                        industry's standard dummy text.</p>
-                    <div class="rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                    </div>
-                    <img src="../static/images/jose-pic.jpg">
-                    <h3>Jose Aquino</h3>
-                </div>
-                <div class="col-3">
-                    <i class="fa fa-quote-left"></i>
-                    <p>Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
-                        industry's standard dummy text.</p>
-                    <div class="rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                    </div>
-                    <img src="../static/images/jeremy-pic.jpg">
-                    <h3>Jeremy Garin</h3>
-                </div>
-                <div class="col-3">
-                    <i class="fa fa-quote-left"></i>
-                    <p>Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
-                        industry's standard dummy text.</p>
-                    <div class="rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                    </div>
-                    <img src="../static/images/ross-pic.jpg">
-                    <h3>Ross Cedric Nazareno</h3>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Brands -->
-
     <div class="brands">
         <div class="small-container">
             <div class="row">

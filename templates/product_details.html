@@ -1,112 +1,78 @@
 {% extends 'base.html' %}
+
 {% block content %}
 
-    <!-- Single Products -->
+    <!-- Single Product -->
     <div class="small-container single-product">
         <div class="row">
             <div class="col-2">
-                <img src="{{url_for('static',filename = 'images/gallery-1.jpg')}}" width="100%" id="ProductImg">
-
+                <!-- Product Image -->
+                <img src="{{ url_for('static', filename='uploads/products/' + product['product_image']) }}" width="100%" id="ProductImg">
                 <div class="small-img-row">
-                    <div class="small-img-col">
-                        <img src="{{url_for('static',filename = 'images/gallery-1.jpg')}}" width="100%" class="small-img">
-                    </div>
-                    <div class="small-img-col">
-                        <img src="{{url_for('static',filename = 'images/gallery-2.jpg')}}" width="100%" class="small-img">
-                    </div>
-                    <div class="small-img-col">
-                        <img src="{{url_for('static',filename = 'images/gallery-3.jpg')}}" width="100%" class="small-img">
-                    </div>
-                    <div class="small-img-col">
-                        <img src="{{url_for('static',filename = 'images/gallery-4.jpg')}}" width="100%" class="small-img">
-                    </div>
+                    <!-- Loop through the product images if available -->
+                    {% for i in range(4) %}
+                        <div class="small-img-col">
+                            <img src="{{ url_for('static', filename='uploads/products/' + product['product_image']) }}" width="100%" class="small-img">
+                        </div>
+                    {% endfor %}
                 </div>
-
             </div>
+
             <div class="col-2">
-                <p>Home / T-Shirt</p>
-                <h1>Red Printed T-Shirt by HRX</h1>
-                <h4>$50.00</h4>
-                <select>
-                    <option>Select Size</option>
-                    <option>XXL</option>
-                    <option>XL</option>
-                    <option>L</option>
-                    <option>M</option>
-                    <option>S</option>
-                </select>
-                <input type="number" value="1">
-                <a href="" class="btn">Add To Cart</a>
+                <p>Home / {{ product['product_category'] }}</p> <!-- Category -->
+                <h1>{{ product['product_name'] }}</h1> <!-- Product Name -->
+                <h4>${{ product['product_price'] }}</h4> <!-- Product Price -->
+                <p><strong>Condition:</strong> {{ product['product_condition'] }}</p> <!-- Product Condition -->
+                <p><strong>Size:</strong> {{ product['product_size'] }}</p> <!-- Product Size -->
+                <p><strong>Description:</strong> {{ product['product_description'] }}</p> <!-- Product Description -->
 
-                <h3>Product Details <i class="fa fa-indent"></i></h3>
-                <br>
-                <p>Give your summer wardrobe a style upgrade with the HRX Men's Active T-Shirt. Team it with a pair of
-                    shorts for your morning workout or a denims for an evening out with the guys.</p>
+                <!-- Toggle Add/Remove Button -->
+                <form action="{{ url_for('toggle_cart', product_id=product['product_id']) }}" method="POST">
+                    {% if product_in_cart %}
+                        <button type="submit" class="btn">Remove from Cart</button>
+                    {% else %}
+                        <button type="submit" class="btn">Add to Cart</button>
+                    {% endif %}
+                </form>
+                <!-- Wishlist Toggle Button -->
+                <form action="{{ url_for('toggle_wishlist', product_id=product['product_id']) }}" method="POST">
+                    {% if product_in_wishlist %}
+                        <button type="submit" class="btn">Remove from Wishlist</button>
+                    {% else %}
+                        <button type="submit" class="btn">Add to Wishlist</button>
+                    {% endif %}
+                </form>
+
             </div>
         </div>
     </div>
-    <!-- title -->
-    <div class="small-container">
-        <div class="row row-2">
-            <h2>Related Products</h2>
-            <p>View More</p>
-        </div>
+
+    <!-- Related Products -->
+<div class="small-container">
+    <div class="row row-2">
+        <h2>Related Products</h2>
+        <a href="{{ url_for('products', category=product['product_category']) }}">View More</a>
     </div>
-    <!-- Products -->
-    <div class="small-container">
-        <div class="row">
+</div>
+
+<!-- Products -->
+<div class="small-container">
+    <div class="row">
+        {% for related_product in related_products %}
             <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-9.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
+                <!-- Link to the product details page -->
+                <a href="{{ url_for('product_details', product_id=related_product['product_id']) }}">
+                    <img src="{{ url_for('static', filename='uploads/products/' + related_product['product_image']) }}">
+                    <h4>{{ related_product['product_name'] }}</h4>
+                    <p>${{ related_product['product_price'] }}</p>
+                </a>
             </div>
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-10.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-11.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-12.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-        </div>
+        {% endfor %}
     </div>
-    
-    <!-- product gallery -->
+</div>
+
+
+    <!-- Product gallery -->
     <script>
         var ProductImg = document.getElementById("ProductImg");
         var SmallImg = document.getElementsByClassName("small-img");
@@ -123,7 +89,6 @@
         SmallImg[3].onclick = function () {
             ProductImg.src = SmallImg[3].src;
         }
-
     </script>
 
 {% endblock %}

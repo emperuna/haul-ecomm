@@ -1,170 +1,140 @@
 {% extends 'base.html' %}
+
 {% block content %}
-
     <!-- All Products -->
-
     <div class="small-container">
         <div class="row row-2">
-            <h2>All Products</h2>
-            <select>
-                <option>Default Sort</option>
-                <option>Sort By Price</option>
-                <option>Sort By Popularity</option>
-                <option>Sort By Rating</option>
-                <option>Sort By Sale</option>
-            </select>
+            <h2>
+                {% if request.args.get('search') %}
+                    Results for "{{ request.args.get('search') }}"
+                {% elif request.args.get('category') %}
+                    Products in Category: "{{ request.args.get('category') }}"
+                {% elif request.args.get('condition') %}
+                    Products in Condition: "{{ request.args.get('condition') }}"
+                {% elif request.args.get('min_price') or request.args.get('max_price') %}
+                    Products by Price Range
+                    {% if request.args.get('min_price') %} (Min: ${{ request.args.get('min_price') }}){% endif %}
+                    {% if request.args.get('max_price') %} (Max: ${{ request.args.get('max_price') }}){% endif %}
+                {% elif request.args.get('sort_by') %}
+                    Products Sorted by 
+                    {% if request.args.get('sort_by') == 'price_asc' %}Price: Low to High{% endif %}
+                    {% if request.args.get('sort_by') == 'price_desc' %}Price: High to Low{% endif %}
+                    {% if request.args.get('sort_by') == 'name_asc' %}Name: A to Z{% endif %}
+                    {% if request.args.get('sort_by') == 'name_desc' %}Name: Z to A{% endif %}
+                {% else %}
+                    All Products
+                {% endif %}
+            </h2>
         </div>
-        <div class="row">
-            <div class="col-4">
-                <a href="product_details.html"><img src="{{url_for('static',filename = 'images/product-1.jpg')}}"></a>
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
+    
+
+        <!-- Form for Search and Filtering -->
+        <form method="GET" action="{{ url_for('products') }}">
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <label for="product-search">Search for Products:</label>
+                <div class="search-bar">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        id="product-search" 
+                        placeholder="Search for products..." 
+                        value="{{ request.args.get('search', '') }}" 
+                    />
+                    <!-- Magnifying Glass Icon for Search -->
+                    <button type="submit" id="search-button" class="search-icon-btn">
+                        <i class="fa fa-search"></i>  <!-- Font Awesome Search Icon -->
+                    </button>
                 </div>
-                <p>$50.00</p>
             </div>
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-2.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
+
+            <!-- Toggle Filter Button -->
+            <button type="button" id="filter-toggle" class="filter-toggle-btn">Show Filters</button>
+
+            <!-- Filters Section -->
+            <div class="filters-section" id="filters-section" style="display: none;">
+                <h3>Filter by:</h3>
+
+                <!-- Product Category Filter -->
+                <div class="filter-item">
+                    <label for="product-category">Category:</label>
+                    <select name="category" id="product-category">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category['product_category'] }}" {% if request.args.get('category') == category['product_category'] %}selected{% endif %}>{{ category['product_category'] }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-3.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
+
+                <!-- Product Condition Filter -->
+                <div class="filter-item">
+                    <label for="product-condition">Condition:</label>
+                    <select name="condition" id="product-condition">
+                        <option value="">All Conditions</option>
+                        {% for condition in conditions %}
+                            <option value="{{ condition['product_condition'] }}" {% if request.args.get('condition') == condition['product_condition'] %}selected{% endif %}>{{ condition['product_condition'] }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-4.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
+
+                <!-- Price Range Filters -->
+                <div class="filter-item">
+                    <label for="min-price">Min Price:</label>
+                    <input type="number" name="min_price" id="min-price" placeholder="Min Price" value="{{ request.args.get('min_price', '') }}" />
                 </div>
-                <p>$50.00</p>
+
+                <div class="filter-item">
+                    <label for="max-price">Max Price:</label>
+                    <input type="number" name="max_price" id="max-price" placeholder="Max Price" value="{{ request.args.get('max_price', '') }}" /> 
+                </div>
+
+                <!-- Sorting Options -->
+                <div class="filter-item">
+                    <label for="sort-by">Sort By:</label>
+                    <select name="sort_by" id="sort-by">
+                        <option value="">Sort By</option>
+                        <option value="price_asc" {% if request.args.get('sort_by') == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+                        <option value="price_desc" {% if request.args.get('sort_by') == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+                        <option value="name_asc" {% if request.args.get('sort_by') == 'name_asc' %}selected{% endif %}>Name: A to Z</option>
+                        <option value="name_desc" {% if request.args.get('sort_by') == 'name_desc' %}selected{% endif %}>Name: Z to A</option>
+                    </select>
+                </div>
+
+                <!-- Filter Button -->
+                <button type="submit">Apply Filters</button>
+                <!-- Clear Filters Button -->
+                <a href="{{ url_for('products') }}" class="clear-filters-btn">Clear Filters</a>
             </div>
+        </form>
+
+        <!-- Products List -->
+        <div class="row" id="product-list">
+            {% if products %}
+                {% for product in products %}
+                    <div class="col-4">
+                        <a href="{{ url_for('product_details', product_id=product['product_id']) }}">
+                            {% if product['product_image'] %}
+                                <img src="{{ url_for('static', filename='uploads/products/' + product['product_image']) }}" alt="{{ product['product_name'] }}"/>
+                            {% else %}
+                                <img src="{{ url_for('static', filename='images/default-product.jpg') }}" alt="No image available"/>
+                            {% endif %}
+                        </a>
+                        <h4>{{ product['product_name'] }}</h4>
+                        <p>${{ product['product_price'] }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-results">
+                    {% if request.args.get('search') %}
+                        <p>No products match your search for "<strong>{{ request.args.get('search') }}</strong>".</p>
+                    {% else %}
+                        <p>No products available.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
-        <h2 class="title">Latest Products</h2>
-        <div class="row">
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-5.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-6.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-7.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-8.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-9.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-10.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-11.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-            <div class="col-4">
-                <img src="{{url_for('static',filename = 'images/product-12.jpg')}}">
-                <h4>Red Printed T-Shirt</h4>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
-        </div>
+
         <div class="page-btn">
             <span>1</span>
             <span>2</span>
@@ -174,4 +144,27 @@
         </div>
     </div>
 
- {% endblock %}
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButton = document.getElementById('filter-toggle');
+        const filterSection = document.getElementById('filters-section');
+
+        // Ensure elements are found
+        if (toggleButton && filterSection) {
+            toggleButton.addEventListener('click', function() {
+                // Toggle the display of the filter section
+                if (filterSection.style.display === 'none') {
+                    filterSection.style.display = 'block';
+                    toggleButton.textContent = 'Hide Filters';
+                } else {
+                    filterSection.style.display = 'none';
+                    toggleButton.textContent = 'Show Filters';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+
+{% endblock %}
