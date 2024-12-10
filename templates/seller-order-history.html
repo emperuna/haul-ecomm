@@ -1,0 +1,233 @@
+{% extends 'base-seller.html' %}
+
+{% block content %}
+<div class="order-history-container">
+    <div class="page-header">
+        <h1>Order History</h1>
+        <p class="subtitle">Track your past sales and transactions</p>
+    </div>
+
+    <div class="table-container">
+        <table id="order-history">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically added by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.order-history-container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    color: #003449;
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.table-container {
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#order-history {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+#order-history th {
+    background: #f8fafc;
+    color: #003449;
+    font-weight: 600;
+    text-align: left;
+    padding: 15px 20px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#order-history td {
+    padding: 15px 20px;
+    border-top: 1px solid #edf2f7;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+#order-history tbody tr {
+    transition: background 0.3s ease;
+}
+
+#order-history tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* Product cell styling */
+.product-cell {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.product-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-name {
+    font-weight: 500;
+    color: #003449;
+    margin-bottom: 3px;
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-completed {
+    background: #e6f4ea;
+    color: #1e7e34;
+}
+
+.status-pending {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+/* Price formatting */
+.price {
+    font-family: monospace;
+    font-size: 0.95rem;
+}
+
+/* Date formatting */
+.date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .order-history-container {
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    #order-history th,
+    #order-history td {
+        padding: 12px 15px;
+        font-size: 0.85rem;
+    }
+
+    .product-image {
+        width: 40px;
+        height: 40px;
+    }
+}
+</style>
+
+<script>
+function fetchOrderHistory() {
+    fetch('/seller_order_history')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const tableBody = document.querySelector('#order-history tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            data.forEach(row => {
+                const tableRow = document.createElement('tr');
+                const total = (row.price * row.quantity).toFixed(2);
+                
+                tableRow.innerHTML = `
+                    <td>
+                        <div class="product-cell">
+                            <img src="/static/uploads/products/${row.image}" alt="Product Image" class="product-image">
+                            <div class="product-info">
+                                <span class="product-name">${row.name}</span>
+                                <span class="product-id">#${row.id}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="price">₱${row.price}</span></td>
+                    <td>${row.quantity}</td>
+                    <td><span class="price">₱${total}</span></td>
+                    <td><span class="date">${formatDate(row.date)}</span></td>
+                    <td><span class="status-badge status-completed">Completed</span></td>
+                `;
+                tableBody.appendChild(tableRow);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching order history:', error);
+            const tableBody = document.querySelector('#order-history tbody');
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 30px;">
+                        <div style="color: #666;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 24px; margin-bottom: 10px;"></i>
+                            <p>Error fetching data. Please try again later.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+}
+
+function formatDate(dateString) {
+    const options = { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+}
+
+</script>
+<!-- // Fetch order history when the page loads -->
+
+
+<script>window.onload = fetchOrderHistory;</script>
+{% endblock %}

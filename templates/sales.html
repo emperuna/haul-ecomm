@@ -1,83 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base-seller.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Analysis | Ecommerce Website</title>
-    <link rel="stylesheet" href="../static/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
+{% block content %}
 
 <body>
-    <div class="container">
-        <!-- Navbar -->
-        <div class="navbar">
-            <div class="logo">
-                <a href="index.html"><img src="../static/images/logo.png" width="125px"></a>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="products.html">Products</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="login.html">Account</a></li>
-                </ul>
-            </nav>
-            <a href="profile.html"><img src="../static/images/profile-pic.png" width="30px" height="30px" class="profile-pic"></a>
-            <img src="../static/images/menu.png" class="menu-icon" onclick="menutoggle()">
-        </div>
+<h1>Sales table</h1>
+    <table id="sales-table">
+        <thead>
+            <tr>
+                <th>Product name</th>
+                <th>Product category</th>
+                <th>Product price</th>
+            </tr>
+        </thead>
+        <tbody>
 
+
+        </tbody>
+    </table>
+
+    <script>
+        function fetchSalesData(){
+            fetch('/get_sales_info')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#sales-table tbody');
+                tableBody.innerHTML = '';
+
+                data.forEach(row => {
+                    const tableRow = document.createElement('tr');
+                    tableRow.innerHTML =`
+                    <td>${row.name}</td>
+                    <td>${row.category}</td>
+                    <td>${row.price}</td>
+                    `;
+                    tableBody.appendChild(tableRow);
+                })
+            })
+            .catch(error => {
+                console.error('error getting data', error);
+            }); 
+        }
+        window.onload = fetchSalesData;
+    </script>
+    
         <!-- Sales Analysis Section -->
         <div class="sales-analysis-container">
             <h1>Sales Analysis</h1>
             <canvas id="salesChart"></canvas>
         </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="footer-col-1">
-                        <h3>Download Our App</h3>
-                        <p>Download App for Android and iOS mobile phone.</p>
-                        <div class="app-logo">
-                            <img src="../static/images/play-store.png">
-                            <img src="../static/images/app-store.png">
-                        </div>
-                    </div>
-                    <div class="footer-col-2">
-                        <img src="../static/images/logo-white.png">
-                        <p>Our Purpose Is To Sustainably Make the Pleasure and Benefits of Sports Accessible to the Many.</p>
-                    </div>
-                    <div class="footer-col-3">
-                        <h3>Useful Links</h3>
-                        <ul>
-                            <li>Coupons</li>
-                            <li>Blog Post</li>
-                            <li>Return Policy</li>
-                            <li>Join Affiliate</li>
-                        </ul>
-                    </div>
-                    <div class="footer-col-4">
-                        <h3>Follow Us</h3>
-                        <ul>
-                            <li>Facebook</li>
-                            <li>Twitter</li>
-                            <li>Instagram</li>
-                            <li>Youtube</li>
-                        </ul>
-                    </div>
-                </div>
-                <hr>
-                <p class="copyright">Copyright 2023 - Ecommerce Website</p>
-            </div>
-        </div>
-    </div>
 
     <!-- JavaScript for Sales Analytics -->
     <script>
@@ -148,6 +118,7 @@
             }
         }
     </script>
-</body>
 
-</html>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% endblock %}

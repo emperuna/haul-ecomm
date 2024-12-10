@@ -1,25 +1,370 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Verify OTP</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #003449 0%, #00171F 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
 
-{% block title %}Verify OTP{% endblock %}
+        .flash-messages {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
 
-{% block content %}
-<!-- OTP Verification Page -->
-<div class="account-page">
-    <div class="container">
-        <div class="row">
-            <div class="col-2">
-                <img src="{{ url_for('static', filename='images/image1.png') }}" width="100%">
-            </div>
-            <div class="col-2">
-                <div class="form-container">
-                    <form id="OtpForm" method="POST" action="{{ url_for('verify_otp') }}">
-                        <input type="hidden" name="email" value="{{ email }}"> <!-- Pass the email to backend -->
-                        <input type="text" name="otp" placeholder="Enter OTP" required>
-                        <button type="submit" class="btn">Verify OTP</button>
-                    </form>
+        .alert {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .otp-container {
+            max-width: 380px;
+            margin: 6rem auto 2rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .otp-form {
+            text-align: center;
+        }
+
+        .otp-title {
+            color: #003449;
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        .otp-message {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .otp-input-group {
+            display: flex;
+            gap: 0.4rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .otp-digit {
+            width: 45px;
+            height: 50px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .otp-digit:focus {
+            border-color: #003449;
+            box-shadow: 0 0 0 2px rgba(0, 52, 73, 0.1);
+            outline: none;
+        }
+
+        .otp-btn {
+            background: #003449;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .otp-btn:hover {
+            background: #004d6b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .otp-btn:active {
+            transform: translateY(0);
+        }
+
+        .resend-link {
+            display: block;
+            margin-top: 1.2rem;
+            color: #003449;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+
+        .resend-link:hover {
+            color: #004d6b;
+            text-decoration: underline;
+        }
+
+        .timer {
+            display: block;
+            margin-top: 0.5rem;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 480px) {
+            .otp-container {
+                margin: 5rem 1rem 1rem;
+                padding: 1.5rem;
+            }
+
+            .otp-digit {
+                width: 40px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+        }
+
+        .header {
+            background: #003449;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-link {
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-link:hover {
+            transform: scale(1.02);
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+        }
+
+        .nav-menu {
+            margin-left: auto;
+        }
+
+        .nav-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: #ddd;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background: #003449;
+            color: white;
+        }
+
+        .nav-link i {
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .logo-img {
+                height: 32px;
+            }
+
+            .nav-link {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">
+                    <a href="{{ url_for('home') }}" class="logo-link">
+                        <img src="{{ url_for('static', filename='images/haul-logo-header.png') }}" alt="Logo" class="logo-img">
+                    </a>
                 </div>
+                <nav class="nav-menu">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="{{ url_for('login') }}" class="nav-link">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>LOG IN</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
+    </header>
+
+    <!-- Flash Messages -->
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </div>
-</div>
-{% endblock %}
+
+    <div class="otp-container">
+        <form id="otpForm" method="POST" action="{{ url_for('verify_otp') }}" class="otp-form">
+            <h2 class="otp-title">Verify Your Email</h2>
+            <p class="otp-message">Code sent to<br><strong>{{ email }}</strong></p>
+            
+            <input type="hidden" name="email" value="{{ email }}">
+            
+            <div class="otp-input-group">
+                <input type="text" class="otp-digit" maxlength="1" pattern="\d" required>
+                <input type="text" class="otp-digit" maxlength="1" pattern="\d" required>
+                <input type="text" class="otp-digit" maxlength="1" pattern="\d" required>
+                <input type="text" class="otp-digit" maxlength="1" pattern="\d" required>
+                <input type="text" class="otp-digit" maxlength="1" pattern="\d" required>
+                <input type="text" class="otp-digit" maxlength="1" pattern="\d" required>
+            </div>
+            
+            <input type="hidden" name="otp" id="completeOtp">
+            <button type="submit" class="otp-btn">Verify Email</button>
+            
+            <a href="#" class="resend-link" id="resendLink" style="display: none;">
+                Resend Code
+            </a>
+            <span class="timer" id="timer">Resend code in <span id="countdown">60</span>s</span>
+        </form>
+    </div>
+
+    <script>
+        // OTP Input Handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const otpDigits = document.querySelectorAll('.otp-digit');
+            const completeOtp = document.getElementById('completeOtp');
+            const form = document.getElementById('otpForm');
+            const resendLink = document.getElementById('resendLink');
+            const timer = document.getElementById('timer');
+            const countdown = document.getElementById('countdown');
+            
+            // Handle OTP input
+            otpDigits.forEach((input, index) => {
+                input.addEventListener('input', function(e) {
+                    if (e.target.value.length === 1) {
+                        if (index < otpDigits.length - 1) {
+                            otpDigits[index + 1].focus();
+                        }
+                    }
+                });
+
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        otpDigits[index - 1].focus();
+                    }
+                });
+            });
+
+            // Handle form submission
+            form.addEventListener('submit', function(e) {
+                const otp = Array.from(otpDigits).map(digit => digit.value).join('');
+                completeOtp.value = otp;
+            });
+
+            // Timer functionality
+            let timeLeft = 60;
+            const countdownTimer = setInterval(() => {
+                timeLeft--;
+                countdown.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdownTimer);
+                    timer.style.display = 'none';
+                    resendLink.style.display = 'block';
+                }
+            }, 1000);
+
+            // Auto-dismiss flash messages
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 300);
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

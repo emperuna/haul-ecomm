@@ -1,15 +1,283 @@
-<!-- verify_code.html -->
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Verify Code</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #003449 0%, #00171F 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
 
-{% block content %}
-<div class="verify-code-container">
-    <h2>Enter Verification Code</h2>
-    <form method="POST" action="{{ url_for('verify_code') }}">
-        <div class="form-group">
-            <label for="verification_code">Verification Code</label>
-            <input type="text" id="verification_code" name="verification_code" class="form-control" placeholder="Enter the verification code" required>
+        .flash-messages {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .alert {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 80px);
+            padding: 2rem;
+        }
+
+        .verify-code-container {
+            width: 100%;
+            max-width: 380px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .verify-logo-section {
+            background: #003449;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .verify-logo-section img {
+            height: 40px;
+            margin-bottom: 1rem;
+        }
+
+        .verify-form {
+            padding: 2rem;
+        }
+
+        .verify-title {
+            text-align: center;
+            color: #003449;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .verify-message {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+
+        .code-input-group {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-digit {
+            width: 45px;
+            height: 50px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .code-digit:focus {
+            border-color: #003449;
+            box-shadow: 0 0 0 2px rgba(0, 52, 73, 0.1);
+            outline: none;
+        }
+
+        .verify-btn {
+            background: #003449;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .verify-btn:hover {
+            background: #004d6b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .verify-btn:active {
+            transform: translateY(0);
+        }
+
+        .resend-link {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: #003449;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+
+        .resend-link:hover {
+            color: #004d6b;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .verify-code-container {
+                margin: 1rem;
+            }
+
+            .verify-form {
+                padding: 1.5rem;
+            }
+
+            .code-digit {
+                width: 40px;
+                height: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Keep the existing header -->
+    <header class="header">
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">
+                    <a href="{{ url_for('home') }}">
+                        <img src="{{ url_for('static', filename='images/haul-logo-header.png') }}" alt="Logo">
+                    </a>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#">Verify Code</a></li>
+                    </ul>
+                </nav>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Verify Code</button>
-    </form>
-</div>
-{% endblock %}
+    </header>
+
+    <!-- Flash Messages -->
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="main-content">
+        <div class="verify-code-container">
+            <div class="verify-logo-section">
+                <img src="{{ url_for('static', filename='images/haul-logo-header.png') }}" alt="Company Logo">
+            </div>
+            
+            <div class="verify-form">
+                <h2 class="verify-title">Verify Your Code</h2>
+                <p class="verify-message">Please enter the verification code sent to your email</p>
+                
+                <form method="POST" action="{{ url_for('verify_code') }}">
+                    <div class="code-input-group">
+                        <input type="text" class="code-digit" maxlength="1" pattern="\d" required>
+                        <input type="text" class="code-digit" maxlength="1" pattern="\d" required>
+                        <input type="text" class="code-digit" maxlength="1" pattern="\d" required>
+                        <input type="text" class="code-digit" maxlength="1" pattern="\d" required>
+                        <input type="text" class="code-digit" maxlength="1" pattern="\d" required>
+                        <input type="text" class="code-digit" maxlength="1" pattern="\d" required>
+                    </div>
+                    
+                    <input type="hidden" name="verification_code" id="completeCode">
+                    <button type="submit" class="verify-btn">Verify Code</button>
+                </form>
+                
+                <a href="#" class="resend-link">Resend Code</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle code input
+        const codeDigits = document.querySelectorAll('.code-digit');
+        const completeCode = document.getElementById('completeCode');
+
+        codeDigits.forEach((input, index) => {
+            input.addEventListener('input', function(e) {
+                if (e.target.value.length === 1) {
+                    if (index < codeDigits.length - 1) {
+                        codeDigits[index + 1].focus();
+                    }
+                }
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    codeDigits[index - 1].focus();
+                }
+            });
+        });
+
+        // Update hidden input before form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const code = Array.from(codeDigits).map(digit => digit.value).join('');
+            completeCode.value = code;
+        });
+
+        // Auto-dismiss flash messages
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 300);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

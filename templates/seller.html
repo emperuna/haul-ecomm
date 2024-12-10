@@ -1,146 +1,145 @@
 {% extends 'base-seller.html' %}
 
 {% block content %}
+<!-- <div class="page-wrapper"> -->
+    <!-- Sidebar -->
+    <!-- <div class="sidebar"> 
+        <nav class="sidebar-nav">                
+            <a href="{{ url_for('seller') }}" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
 
-<body>
-    <div class="container">
-        <div class="banner">
-            <h1>Welcome, Seller!</h1>
-            <p>Customize your store and manage your products easily.</p>
-            <button class="customize-banner-btn" onclick="document.getElementById('banner-upload').click()">Customize Banner</button>
-            <input type="file" id="banner-upload" style="display: none;" onchange="uploadBanner(event)">
+            <a href="{{ url_for('inventory') }}" class="nav-item">
+                <i class="fas fa-box"></i>
+                <span>Inventory</span>
+            </a>
+            
+            <a href="{{ url_for('seller_profile') }}" class="nav-item">
+                <i class="fas fa-user-cog"></i>
+                <span>Account</span>
+            </a>
+            
+            <a href="{{ url_for('view_seller_orders') }}" class="nav-item">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Orders</span>
+            </a>
+            
+            <a href="{{ url_for('history') }}" class="nav-item">
+                <i class="fas fa-history"></i>
+                <span>History</span>
+            </a>
+        </nav>
+    </div> -->
+
+    <!-- Main Content -->
+    <!-- <div class="main-content"> -->
+        <!-- Stats Cards Row -->
+        <!-- Stats Cards Row -->
+        <div class="stats-container">
+            <div class="stat-card purple">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>My Revenue</h3>
+                    <div class="stat-value">₱{{ revenue }}</div>
+                    <div class="stat-change">+4.2% ↑</div>
+                </div>
+            </div>
+            
+            <div class="stat-card pink">
+                <div class="stat-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>My Orders</h3>
+                    <div class="stat-value">{{ orders_count }}</div>
+                    <div class="stat-change">+2.4% ↑</div>
+                </div>
+            </div>
+
+            <div class="stat-card orange">
+                <div class="stat-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Units Sold</h3>
+                    <div class="stat-value">{{ units_sold }}</div>
+                    <div class="stat-change">+3.1% ↑</div>
+                </div>
+            </div>
+
+            <div class="stat-card blue">
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Average Order Value</h3>
+                    <div class="stat-value">₱{{ average_order_value }} </div>
+                    <div class="stat-change">+1.2% ↑</div>
+                </div>
+            </div>
         </div>
 
-        <div class="seller-functions">
-            <div class="function">
-                <h2>Inventory</h2>
-                <p>Customize products to your store.</p>
-                <button onclick="redirectToInventory()">Update Product</button>
+        <!-- Sales Chart Section -->
+        <div class="chart-section">
+            <div class="chart-header">
+                <h2>Sales Statistics</h2>
+                <select class="time-selector">
+                    <option>Monthly</option>
+                    <option>Weekly</option>
+                    <option>Daily</option>
+                </select>
             </div>
-            <div class="function">
-                <h2>View Sales</h2>
-                <p>Check your sales and revenue.</p>
-                <button onclick="redirectToSales()">View Sales</button>
-            </div>
-            <div class="function">
-                <h2>Manage Account</h2>
-                <p>Update your account information.</p>
-                <button onclick="redirectToAccount()">Manage Account</button>
-            </div>
+            <canvas id="salesChart"></canvas>
         </div>
+    <!-- </div> -->
+<!-- </div> -->
 
-        <div class="product-list">
-            <h2>Your Products</h2>
-            <table id="product-table">
-                <thead>
-                    <tr>
-                        <th>Product Name</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Product rows will be dynamically added here -->
-                </tbody>
-            </table>
-            <div class="pagination"></div>
-        </div>
 
-        <h2>Top Products</h2>
-        <div class="featured-products">
-            <div class="product">
-                <img src="../static/images/product-1.jpg" alt="Product 1">
-                <h3>Product 1</h3>
-                <p>$19.99</p>
-            </div>
-            <div class="product">
-                <img src="../static/images/product-2.jpg" alt="Product 2">
-                <h3>Product 2</h3>
-                <p>$29.99</p>
-            </div>
-            <div class="product">
-                <img src="../static/images/product-3.jpg" alt="Product 3">
-                <h3>Product 3</h3>
-                <p>$39.99</p>
-            </div>
-            <div class="product">
-                <img src="../static/images/product-4.jpg" alt="Product 4">
-                <h3>Product 4</h3>
-                <p>$49.99</p>
-            </div>
-        </div>
 
-        <script>
-            function menutoggle() {
-                var menuItems = document.getElementById("menuItems");
-                if (menuItems.style.maxHeight == "0px") {
-                    menuItems.style.maxHeight = "200px";
-                } else {
-                    menuItems.style.maxHeight = "0px";
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Set active nav item based on current URL
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPath = window.location.pathname;
+        const navItems = document.querySelectorAll('.nav-item');
+        
+        navItems.forEach(item => {
+            if (item.getAttribute('href') === currentPath) {
+                item.classList.add('active');
+            }
+        });
+    });
+
+    // Initialize sales chart
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    const salesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Marketing Sales',
+                data: [30, 45, 60, 35, 25, 50, 40],
+                borderColor: '#8B5CF6',
+                tension: 0.4
+            }, {
+                label: 'Direct Sales',
+                data: [25, 35, 45, 50, 35, 45, 55],
+                borderColor: '#FF4B6E',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
                 }
             }
-
-            // Pagination logic
-            const rowsPerPage = 5;
-            const rows = document.querySelectorAll('#product-table tbody tr');
-            const rowsCount = rows.length;
-            const pageCount = Math.ceil(rowsCount / rowsPerPage);
-            const pagination = document.querySelector('.pagination');
-
-            function displayRows(page) {
-                const start = (page - 1) * rowsPerPage;
-                const end = start + rowsPerPage;
-
-                rows.forEach((row, index) => {
-                    row.style.display = (index >= start && index < end) ? '' : 'none';
-                });
-            }
-
-            function setupPagination() {
-                pagination.innerHTML = ''; // Clear existing pagination
-                for (let i = 1; i <= pageCount; i++) {
-                    const span = document.createElement('span');
-                    span.classList.add('page-number');
-                    if (i === 1) span.classList.add('active');
-                    span.textContent = i;
-                    span.addEventListener('click', () => {
-                        document.querySelector('.pagination .active').classList.remove('active');
-                        span.classList.add('active');
-                        displayRows(i);
-                    });
-                    pagination.appendChild(span);
-                }
-            }
-
-            displayRows(1);
-            setupPagination();
-
-            // Banner upload logic
-            function uploadBanner(event) {
-                const banner = document.querySelector('.banner');
-                const file = event.target.files[0];
-                const reader = new FileReader();
-
-                reader.onload = function(e) {
-                    banner.style.backgroundImage = `url(${e.target.result})`;
-                };
-
-                reader.readAsDataURL(file);
-            }
-
-            // Redirect to inventory page
-            function redirectToInventory() {
-                window.location.href = "{{ url_for('inventory') }}";
-            }
-
-            function redirectToSales() {
-                window.location.href = 'sales.html';
-            }
-
-            function redirectToAccount() {
-                window.location.href = "{{ url_for('seller_profile') }}";
-            }
-        </script>
-    </div>    
-</body>
+        }
+    });
+</script>
 {% endblock %}

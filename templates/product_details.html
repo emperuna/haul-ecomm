@@ -1,94 +1,693 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="product-details-container">
+    <!-- Breadcrumb Navigation -->
+    <div class="breadcrumb">
+        <a href="{{ url_for('products') }}">Products</a>
+        <span class="separator">/</span>
+        <a href="{{ url_for('products', category=product['product_category']) }}">{{ product['product_category'] }}</a>
+        <span class="separator">/</span>
+        <span class="current">{{ product['product_name'] }}</span>
+    </div>
 
-    <!-- Single Product -->
-    <div class="small-container single-product">
-        <div class="row">
-            <div class="col-2">
-                <!-- Product Image -->
-                <img src="{{ url_for('static', filename='uploads/products/' + product['product_image']) }}" width="100%" id="ProductImg">
-                <div class="small-img-row">
-                    <!-- Loop through the product images if available -->
-                    {% for i in range(4) %}
-                        <div class="small-img-col">
-                            <img src="{{ url_for('static', filename='uploads/products/' + product['product_image']) }}" width="100%" class="small-img">
-                        </div>
-                    {% endfor %}
+    <!-- Product Main Section -->
+    <div class="product-main">
+        <!-- Product Images Section -->
+        <div class="product-images">
+            <div class="main-image">
+                <img src="{{ url_for('static', filename='uploads/products/' + product['product_image']) }}" 
+                     alt="{{ product['product_name'] }}" 
+                     id="ProductImg">
+            </div>
+            <!-- Image thumbnails can be added here if needed -->
+        </div>
+
+        <!-- Product Info Section -->
+        <div class="product-info">
+            <h1 class="product-title">{{ product['product_name'] }}</h1>
+            <div class="product-price">₱{{ product['product_price'] }}</div>
+            
+            <div class="product-meta">
+                <div class="meta-item">
+                    <span class="label">Condition:</span>
+                    <span class="value">{{ product['product_condition'] }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="label">Size:</span>
+                    <span class="value">{{ product['product_size'] }}</span>
                 </div>
             </div>
 
-            <div class="col-2">
-                <p>Home / {{ product['product_category'] }}</p> <!-- Category -->
-                <h1>{{ product['product_name'] }}</h1> <!-- Product Name -->
-                <h4>${{ product['product_price'] }}</h4> <!-- Product Price -->
-                <p><strong>Condition:</strong> {{ product['product_condition'] }}</p> <!-- Product Condition -->
-                <p><strong>Size:</strong> {{ product['product_size'] }}</p> <!-- Product Size -->
-                <p><strong>Description:</strong> {{ product['product_description'] }}</p> <!-- Product Description -->
+            <div class="product-description">
+                <h3>Product Details</h3>
+                <p>{{ product['product_description'] }}</p>
+            </div>
 
-                <!-- Toggle Add/Remove Button -->
-                <form action="{{ url_for('toggle_cart', product_id=product['product_id']) }}" method="POST">
-                    {% if product_in_cart %}
-                        <button type="submit" class="btn">Remove from Cart</button>
-                    {% else %}
-                        <button type="submit" class="btn">Add to Cart</button>
-                    {% endif %}
+            <!-- Product Actions Section -->
+            <div class="product-actions">
+                <!-- Cart Toggle Button -->
+                <form action="{{ url_for('toggle_cart', product_id=product['product_id']) }}" method="POST" class="action-form">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas {% if product_in_cart %}fa-shopping-cart{% else %}fa-cart-plus{% endif %}"></i>
+                        {% if product_in_cart %}
+                            Remove from Cart
+                        {% else %}
+                            Add to Cart
+                        {% endif %}
+                    </button>
                 </form>
+
                 <!-- Wishlist Toggle Button -->
-                <form action="{{ url_for('toggle_wishlist', product_id=product['product_id']) }}" method="POST">
+                <button id="toggle-wishlist-btn" class="btn-secondary" data-product-id="{{ product['product_id'] }}">
+                    <i class="fas fa-heart {% if product_in_wishlist %}active{% endif %}"></i>
                     {% if product_in_wishlist %}
-                        <button type="submit" class="btn">Remove from Wishlist</button>
+                        Remove from Wishlist
                     {% else %}
-                        <button type="submit" class="btn">Add to Wishlist</button>
+                        Add to Wishlist
                     {% endif %}
-                </form>
+                </button>
+            </div>
+        </div>
+    </div>
 
+    <!-- Seller Information -->
+    <div class="seller-section">
+        <div class="seller-card">
+            <div class="seller-header">
+                <h2>About the Seller</h2>
+                <a href="{{ url_for('seller_details', seller_id=seller['seller_id']) }}" class="seller-link">
+            </div>
+            <div class="seller-content">
+                <div class="seller-profile">
+                    {% if seller['profile_picture'] and seller['profile_picture'] != '(NULL)' %}
+                        <img src="{{ url_for('static', filename='uploads/profile/' + seller['profile_picture']) }}" 
+                             alt="Seller Profile Picture">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='uploads/default.png') }}" 
+                             alt="Default Profile Picture">
+                    {% endif %}
+                </div>
+                <div class="seller-info">
+                    <h3 class="seller-name">{{ seller['shop_name'] }}</h3>
+                    <div class="seller-stats">
+                        <div class="stat">
+                            <i class="fas fa-box"></i>
+                            <span>{{ product_count }} Products</span>
+                        </div>
+                        <!-- DITO KO NILAGAY-->
+                        <div class="seller-rating">              
+                            <strong>Seller Rating:</strong>
+                            <div class="rating-stars">
+                                {% if seller['average_rating'] %}
+                                    {% set rating = seller['average_rating'] | round(1) %}
+                                    {% for i in range(5) %}
+                                        {% if i < rating|int %}
+                                            <i class="fas fa-star"></i>
+                                        {% elif i == rating|int and rating % 1 >= 0.5 %}
+                                            <i class="fas fa-star-half-alt"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="rating-number">({{ rating }})</span>
+                                    <span class="rating-count">{{ seller['rating_count'] }} ratings</span>
+                                {% else %}
+                                    <span class="no-rating">No ratings yet</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-circle {{ 'active' if active_status == 'Active' else 'inactive' }}"></i>
+                            <span>{{ active_status }}</span>
+                        </div>
+                    </div>
+                    <a href="mailto:{{ seller['email'] }}" class="seller-contact">
+                        <i class="fas fa-envelope"></i>
+                        Contact Seller
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Related Products -->
-<div class="small-container">
-    <div class="row row-2">
-        <h2>Related Products</h2>
-        <a href="{{ url_for('products', category=product['product_category']) }}">View More</a>
+    <div class="related-products">
+        <div class="section-header">
+            <h2>Related Products</h2>
+            <a href="{{ url_for('products', category=product['product_category']) }}" class="view-more">
+                View More <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="related-products-grid">
+            {% for related_product in related_products %}
+                <div class="related-product-card">
+                    <div class="product-image-wrapper">
+                        <a href="{{ url_for('product_details', product_id=related_product['product_id']) }}">
+                            <img src="{{ url_for('static', filename='uploads/products/' + related_product['product_image']) }}" 
+                                 alt="{{ related_product['product_name'] }}"
+                                 loading="lazy">
+                        </a>
+                        <!-- Wishlist Button -->
+                        <button class="wishlist-btn" 
+                                data-product-id="{{ related_product['product_id'] }}"
+                                title="Add to Wishlist">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="product-details">
+                        <a href="{{ url_for('product_details', product_id=related_product['product_id']) }}" 
+                           class="product-name">{{ related_product['product_name'] }}</a>
+                        <div class="product-meta">
+                            <span class="price">₱{{ related_product['product_price'] }}</span>
+                            <span class="condition">{{ related_product['product_condition'] }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 
-<!-- Products -->
-<div class="small-container">
-    <div class="row">
-        {% for related_product in related_products %}
-            <div class="col-4">
-                <!-- Link to the product details page -->
-                <a href="{{ url_for('product_details', product_id=related_product['product_id']) }}">
-                    <img src="{{ url_for('static', filename='uploads/products/' + related_product['product_image']) }}">
-                    <h4>{{ related_product['product_name'] }}</h4>
-                    <p>${{ related_product['product_price'] }}</p>
-                </a>
-            </div>
-        {% endfor %}
-    </div>
-</div>
+<style>
+.product-details-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
 
+.breadcrumb {
+    margin-bottom: 2rem;
+    color: #666;
+}
 
-    <!-- Product gallery -->
-    <script>
-        var ProductImg = document.getElementById("ProductImg");
-        var SmallImg = document.getElementsByClassName("small-img");
+.breadcrumb a {
+    color: #3182ce;
+    text-decoration: none;
+}
 
-        SmallImg[0].onclick = function () {
-            ProductImg.src = SmallImg[0].src;
-        }
-        SmallImg[1].onclick = function () {
-            ProductImg.src = SmallImg[1].src;
-        }
-        SmallImg[2].onclick = function () {
-            ProductImg.src = SmallImg[2].src;
-        }
-        SmallImg[3].onclick = function () {
-            ProductImg.src = SmallImg[3].src;
-        }
-    </script>
+.breadcrumb .separator {
+    margin: 0 0.5rem;
+    color: #cbd5e0;
+}
+
+.breadcrumb .current {
+    color: #4a5568;
+}
+
+.product-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.product-images {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.main-image {
+    width: 500px;
+    height: 500px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f7fafc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #ffffff;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.product-title {
+    font-size: 2rem;
+    color: #1a202c;
+    margin: 0;
+}
+
+.product-price {
+    font-size: 1.75rem;
+    color: #3182ce;
+    font-weight: 600;
+}
+
+.product-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.meta-item .label {
+    color: #718096;
+    margin-right: 0.5rem;
+}
+
+.meta-item .value {
+    color: #2d3748;
+    font-weight: 500;
+}
+
+.product-description {
+    color: #4a5568;
+    line-height: 1.6;
+}
+
+.product-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.btn-primary, .btn-secondary {
+    flex: 1;
+    padding: 1rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: #3182ce;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2c5282;
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #2d3748;
+}
+
+.btn-secondary:hover {
+    background: #cbd5e0;
+}
+
+/* Seller Section */
+.seller-section {
+    margin: 3rem 0;
+}
+
+.seller-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.seller-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.seller-header h2 {
+    margin: 0;
+    color: #2d3748;
+}
+
+.seller-content {
+    padding: 1.5rem;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.seller-profile img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #3182ce;
+}
+
+.seller-info {
+    flex: 1;
+}
+
+.seller-name {
+    margin: 0 0 1rem 0;
+    color: #2d3748;
+}
+
+.seller-stats {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #718096;
+}
+
+.seller-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #3182ce;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Related Products */
+.related-products {
+    margin-top: 4rem;
+    padding: 2rem 0;
+    border-top: 1px solid #e2e8f0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    color: #2d3748;
+    margin: 0;
+}
+
+.view-more {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #3182ce;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.view-more:hover {
+    color: #2c5282;
+}
+
+.related-products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.related-product-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.related-product-card:hover {
+    transform: translateY(-4px);
+}
+
+.product-image-wrapper {
+    width: 250px;
+    height: 250px;
+    position: relative;
+    background: #f7fafc;
+    padding-top: 0;
+}
+
+.product-image-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #ffffff;
+}
+
+.product-image-wrapper:hover img {
+    transform: scale(1.05);
+}
+
+.wishlist-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0;
+}
+
+.product-image-wrapper:hover .wishlist-btn {
+    opacity: 1;
+}
+
+.wishlist-btn:hover {
+    background: #fee2e2;
+    color: #e53e3e;
+}
+
+.wishlist-btn.active {
+    opacity: 1;
+    background: #fee2e2;
+    color: #e53e3e;
+}
+
+.product-details {
+    padding: 1rem;
+}
+
+.product-name {
+    display: block;
+    color: #2d3748;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+    /* Limit to 2 lines with ellipsis */
+    display: -webkit-box;
+    /* -webkit-line-clamp: 2; */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price {
+    color: #3182ce;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.condition {
+    color: #718096;
+    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+    background: #f7fafc;
+    border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .product-main {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .product-images {
+        position: static;
+    }
+
+    .seller-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .seller-stats {
+        justify-content: center;
+    }
+
+    .related-products {
+        margin-top: 2rem;
+        padding: 1rem 0;
+    }
+
+    .related-products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1rem;
+    }
+
+    .wishlist-btn {
+        opacity: 1; /* Always visible on mobile */
+    }
+
+    .main-image {
+        width: 100%;
+        height: 350px;
+    }
+
+    .product-image-wrapper {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-image {
+        height: 300px;
+    }
+
+    .product-image-wrapper {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+.seller-rating {
+    margin-top: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.rating-stars {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.rating-stars i {
+    color: #ffc107;
+    font-size: 1.2em;
+}
+
+.rating-stars .far.fa-star {
+    color: #e0e0e0;
+}
+
+.rating-number {
+    margin-left: 10px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.rating-count {
+    color: #718096;
+    font-size: 0.9em;
+    margin-left: 5px;
+}
+
+.no-rating {
+    color: #718096;
+    font-style: italic;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Wishlist toggle functionality
+    const wishlistBtn = document.getElementById('toggle-wishlist-btn');
+    
+    if (wishlistBtn) {
+        wishlistBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.dataset.productId;
+            
+            fetch(`/toggle-wishlist/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update button text and icon
+                    const icon = wishlistBtn.querySelector('i.fas.fa-heart');
+                    if (data.in_wishlist) {
+                        wishlistBtn.innerHTML = '<i class="fas fa-heart active"></i> Remove from Wishlist';
+                        icon?.classList.add('active');
+                    } else {
+                        wishlistBtn.innerHTML = '<i class="fas fa-heart"></i> Add to Wishlist';
+                        icon?.classList.remove('active');
+                    }
+                    // Reload the page to reflect changes
+                    const scrollPosition = window.scrollY;
+                    window.location.reload();
+                    window.scrollTo(0, scrollPosition);
+                } else {
+                    alert(data.error || 'An error occurred while updating the wishlist');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the wishlist');
+            });
+        });
+    }
+
+    // Related products wishlist buttons
+    document.querySelectorAll('.wishlist-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.dataset.productId;
+            
+            fetch(`/toggle-wishlist/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.classList.toggle('active');
+                    const scrollPosition = window.scrollY;
+                    window.location.reload();
+                    window.scrollTo(0, scrollPosition);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+});
+</script>
 
 {% endblock %}

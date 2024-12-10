@@ -1,0 +1,159 @@
+{% extends 'base-seller.html' %}
+
+{% block content %}
+<div class="orders-container">
+    <div class="page-header">
+        <h1>Manage Orders</h1>
+        <div class="header-actions">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="orderSearch" placeholder="Search orders...">
+            </div>
+            <select class="filter-select" id="statusFilter">
+                <option value="">All Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="orders-table-container">
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Products</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td class="order-id">#{{ order.order_id }}</td>
+                    <td class="customer-info">
+                        <div class="customer-name">{{ order.customer_name }}</div>
+                        <div class="customer-address">{{ order.shipping_address }}</div>
+                    </td>
+                    <td class="order-products">
+                        <div class="products-list">
+                            {% for item in order_items %}
+                            <div class="product-item">
+                                <span class="product-name">{{ item.product_name }}</span>
+                                <span class="product-quantity">x{{ item.quantity }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </td>
+                    <td class="order-total">₱{{ "%.2f"|format(order.total_price) }}</td>
+                    <td class="order-status">
+                        <span class="status-badge {{ order.status|lower }}">{{ order.status }}</span>
+                    </td>
+                    <td class="order-date">
+                        <div class="date">{{ order.order_date.strftime('%b %d, %Y') }}</div>
+                        <div class="time">{{ order.order_date.strftime('%I:%M %p') }}</div>
+                    </td>
+                    <td class="order-actions">
+                        <div class="dropdown">
+                            <button class="btn-status" data-order-id="{{ order.order_id }}">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a href="/seller/orders/{{ order.order_id }}/update?status=Pending" class="dropdown-item" data-status="Pending">
+                                    <i class="fas fa-clock"></i> Mark as Pending
+                                </a>
+                                <a href="/seller/orders/{{ order.order_id }}/update?status=Confirmed" class="dropdown-item" data-status="Confirmed">
+                                    <i class="fas fa-check"></i> Mark as Confirmed
+                                </a>
+                                <a href="/seller/orders/{{ order.order_id }}/update?status=Shipped" class="dropdown-item" data-status="Shipped">
+                                    <i class="fas fa-shipping-fast"></i> Mark as Shipped
+                                </a>
+                                <a href="/seller/orders/{{ order.order_id }}/update?status=Completed" class="dropdown-item" data-status="Completed">
+                                    <i class="fas fa-check-circle"></i> Mark as Completed
+                                </a>
+                                <a href="/seller/orders/{{ order.order_id }}/update?status=Cancelled" class="dropdown-item" data-status="Cancelled">
+                                    <i class="fas fa-times-circle"></i> Mark as Cancelled
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a href="/seller/orders/{{ order.order_id }}/view" class="dropdown-item">
+                                    <i class="fas fa-eye"></i> View Details
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Status dropdown handling
+        document.querySelectorAll('.btn-status').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const currentMenu = this.nextElementSibling;
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                    if (menu !== currentMenu) menu.classList.remove('show');
+                });
+                currentMenu.classList.toggle('show');
+            });
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.classList.remove('show');
+            });
+        });
+
+        // Status update handling
+        document.querySelectorAll('.dropdown-item[data-status]').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const orderId = this.closest('.dropdown').querySelector('.btn-status').dataset.orderId;
+                const newStatus = this.dataset.status;
+                
+                // Add your status update logic here
+                updateOrderStatus(orderId, newStatus);
+            });
+        });
+    });
+
+    function updateOrderStatus(orderId, status) {
+        fetch(`/seller/orders/${orderId}/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status }) // Send status in JSON body
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.error('Failed to update order status:', response.statusText);
+                return response.json().then(err => console.error(err.error));
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                console.log('Order status updated successfully:', data);
+                window.location.reload(); // Refresh the page to show the updated status
+            } else {
+                console.error('Error in server response:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Unexpected error:', error);
+        });
+    }
+</script>
+{% endblock %}

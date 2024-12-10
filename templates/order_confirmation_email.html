@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        :root {
+            --primary-color: #003449;
+            --secondary-color: #ff523b;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --background-color: #f8f9fa;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #003449, #004d6b);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .order-summary {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .order-summary h3 {
+            color: #003449;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .order-items {
+            margin-top: 25px;
+        }
+
+        .order-items h3 {
+            color: #003449;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .items-table th {
+            background-color: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #003449;
+        }
+
+        .items-table td {
+            padding: 12px;
+            border-top: 1px solid #eee;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-confirmed { background: #d4edda; color: #155724; }
+        .status-shipped { background: #cce5ff; color: #004085; }
+        .status-completed { background: #d1e7dd; color: #0f5132; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+
+        .footer {
+            text-align: center;
+            padding: 20px 30px;
+            background-color: #f8f9fa;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        .contact-info {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            font-size: 13px;
+            color: #888;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .items-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Thank you for your order!</h2>
+            <p>Your order has been received and is being processed.</p>
+        </div>
+
+        <div class="content">
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-item">
+                    <span class="summary-label">Order Number:</span>
+                    <span class="summary-value">#{{ order.transaction_id }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Order Date:</span>
+                    <span class="summary-value">{{ order.order_date }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Status:</span>
+                    <span class="status-badge status-{{ order.status.lower() }}">{{ order.status }}</span>
+                </div>
+            </div>
+
+            <div class="order-items">
+                <h3>Order Items</h3>
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order_items %}
+                        <tr>
+                            <td>{{ item.product_name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>₱{{ "{:,.2f}".format(item.price) }}</td>
+                            <td>₱{{ "{:,.2f}".format(item.subtotal) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="shipping-info">
+                <h3>Shipping Details</h3>
+                <div class="summary-item">
+                    <span class="summary-label">Shipping Address:</span>
+                    <span class="summary-value">{{ order.shipping_address }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Thank you for shopping with us!</p>
+            <p>If you have any questions about your order, please contact us.</p>
+            <div class="contact-info">
+                <p>Email: haulthiftshop@gmail.com | Phone: (123) 456-7890</p>
+                <p>© 2024 haulthiftshop. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

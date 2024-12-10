@@ -1,0 +1,32 @@
+.popup{
+    background: rgba(0, 0, 0, 0.6);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup_window{
+    height: 250px;
+    width: 500px;
+    background-color: white;
+    border-radius: 5px;
+    position: relative;
+}
+
+.stars i{
+    color: grey;
+    width: 30px;
+    height: 30px;
+    font-size: 25px;
+    cursor: pointer;
+    text-align: center;
+    transition: color 0.2s ease;
+}
+
+.stars i.active{
+    color: purple;
+}

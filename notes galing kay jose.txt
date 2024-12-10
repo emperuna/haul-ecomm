@@ -17,16 +17,213 @@ ALTER TABLE products ADD FULLTEXT(product_name, product_description);
 ///may search na yan tas filter tsaka sorting. palagyan ng frontend nalang
 
 MGA LALAGYAN NI JEM NG FRONTEND:
-1. error.html -- fixed
-2. pending_seller.html -- fixed
-3. seller_centre.html -- wala pa
+1. error.html
+2. pending_seller.html
+3. seller_centre.html
 
 ///yang tatlo na yan sulat lang as in nakalagay.
 
 MGA DAPAT AUSIN SA FRONT END:
-1. ung search bar sa base. (kz may dinagdag ako na search bar sa products.html) -- in progress
-2. ung sa seller_registration.html,,, dapat ung nakaconnect na base dun ay sa user ndi ung base-seller. -- in progress
-3. at design sa other htmls pa. -- wala pa
+1. ung search bar sa base. (kz may dinagdag ako na search bar sa products.html)
+2. ung sa seller_registration.html,,, dapat ung nakaconnect na base dun ay sa user ndi ung base-seller.
+3. at design sa other htmls pa.
 
 un lang thanks!!
+
+11/30/2024 --------------------------------------------1PM------- IDAGDAG NYO ARE
+CREATE TABLE cart (
+    cart_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT DEFAULT 1,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+
+----------------------------------------------------------FOR WISHLIST TABLE
+
+CREATE TABLE wishlist (
+    wishlist_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+FOR OTP------------------------------------------12/1/2024
+1. INSTALL
+pip install flask-mail
+
+2. ILAGAY SA TAAS
+import random
+from flask_mail import Message, Mail
+import time
+import string
+
+ALTER TABLE users
+ADD COLUMN email_verified BOOLEAN DEFAULT FALSE;
+
+GMAIL ACC NATIN
+email: haulthriftshop@gmail.com
+password: haulthriftshop@ecom
+
+app password: oiow fzpn vvpn iitr
+
+GAGAWIN NI JEREMY--------------------------------
+mag add ng logic sa html na kapag TRUE ung email_verified sa database, 
+may check na nakalagay dun sa tabi ng email sa profile
+if-else lang un tas kaya igpt
+
+----------------------------------------------12/3/2024
+
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    total_price DECIMAL(10, 2) NOT NULL,
+    order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('Pending', 'Completed', 'Cancelled', 'Confirmed', 'Shipped') DEFAULT 'Pending',
+    shipping_address TEXT NOT NULL,
+    payment_method VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+----------------------------------------------------------------------------
+CREATE TABLE order_items (
+    item_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    subtotal DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
+);
+
+----------------------------------------------------------------------------
+
+ALTER TABLE orders
+ADD COLUMN first_name VARCHAR(255),
+ADD COLUMN last_name VARCHAR(255),
+ADD COLUMN mobile_no VARCHAR(15),
+ADD COLUMN email VARCHAR(255);
+
+GAGAWIN NI JOSE TOM--------------- SELLER SIDE NAMAN (ACCEPT ORDER)
+
+ALTER TABLE orders
+ADD COLUMN seller_id INT NOT NULL;
+
+PROBLEM NI JOSE ----------------------------
+sa order_summary isa isa nag gegenerate per seller hindi isang buuan ----OK NA
+sa update status ng sellers order --- OK NA
+
+
+DINAGDAG NI JOSE-------12/7/2024
+1. nagkaron na ng per page or pagination. 
+(binago ang function ng product() tska ung html ng products)
+
+GAGAWIN NI JOSE 12/8/2024
+1. lagyan ng back and buy button sa product details.html (ung lintik na buy nalang)
+2. maglagay ng seller name sa product_details.html
+
+NEED AYUSIN NI JOSE 12/8/2024
+2. sa email,, isa lang din nag gegenerate hahahah ---- nasira pa HAHAHAHAH
+3. hindi madebug ang solo buy now
+4. ok na ung back pero pag may flashed message, need dalawang beses pindutin HAHAHAHA 
+js sya bali pag nag filter ka tas nag back ka hindi mawawala ung filter (alternative: redirect to products nalang)
+
+JEREMY PWEDE MO NA GALAWIN SIGURO UNG PRODUCTS.HTML 
+pacheck din nung mga html baka mabura mo ung mga js 
+
+
+
+
+
+--------------------------------------12/8/2024----1PM
+inayos ung route for superadmin and seller.
+
+MGA BINAGO KONG FUNCTION (JOSE)
+1. @role_required
+2. /seller
+3. /superadmin
+
+(di na nagreredirect sa login pag inaccess sa url ung /superadmin)
+
+4. inventory() and inventory.html - nag add ng pagination
+5. def toggle_product_status(product_id)
+
+pwedeng gawin: lagyan ng js ang inventory para kada pindot ng page hindi 
+nabalik sa taas
+
+MGA IDADAGDAG NYO
+eto sa taas:
+from datetime import datetime
+
+sa database:
+ALTER TABLE sellers ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+6. product_details()
+
+inayos ung profile_picture
+7. profile()
+8. save_file()
+
+HINDI KO MAREFLECT UNG PROFILE SA BASE HTML
+
+--------------------------------------2:49am
+
+12/8/2024--------------------------------
+
+-admin side lagyan ng additional info ung pending sellers 
+pag mag aapprove.
+
+-ung pag ccheckout dapat dapat pag may pending,, hindi muna pwede umorder ung ibang users 
+sa product na un. pag successfull, pwede iarchive.
+
+Summary of Changes
+Check product availability before processing the order.
+Reduce product stock on order placement.
+Use SELECT ... FOR UPDATE to prevent race conditions.
+Commit transactions only after successful checkout.
+Disable products with 0 stock in the frontend.
+Archive products with 0 stock
+
+def update_seller_order_status(order_id): /
+
+def checkout(): /
+
+lagyan ng shipping fee and courier /
+
+ALTER TABLE orders
+ADD COLUMN courier VARCHAR(50),
+ADD COLUMN shipping_fee DECIMAL(10,2);
+
+checkout() and html
+
+def admin_view_products(): /
+def admin_delete_product(product_id): /
+
+admin_view_products.html
+
+ALTER TABLE wishlist
+DROP FOREIGN KEY wishlist_ibfk_2;
+
+ALTER TABLE wishlist
+ADD CONSTRAINT wishlist_ibfk_2
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+    ON DELETE CASCADE;
+
+-- Drop the existing foreign key constraint (replace 'cart_ibfk_2' with the actual constraint name)
+ALTER TABLE cart DROP FOREIGN KEY cart_ibfk_2;
+
+-- Add a new foreign key constraint with ON DELETE CASCADE
+ALTER TABLE cart
+ADD CONSTRAINT cart_ibfk_2
+FOREIGN KEY (product_id) REFERENCES products(product_id)
+ON DELETE CASCADE;
+
 

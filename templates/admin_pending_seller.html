@@ -1,97 +1,332 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pending Sellers</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <!-- Include Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+{% extends "base-admin.html" %}
 
-    <!-- Content -->
-    <div class="container">
-        <h1 class="mt-5">Pending Sellers</h1>
-        <table class="table table-striped mt-3">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Gov ID</th> <!-- New column for Gov ID -->
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for seller in pending_seller %}
-                <tr>
-                    <td>{{ seller.username }}</td>
-                    <td>{{ seller.email }}</td>
-                    <td>
-                        {% if seller.gov_id_path %}
-                            <!-- Button to trigger modal -->
-                            <button 
-                                type="button" 
-                                class="btn btn-primary btn-sm" 
-                                data-toggle="modal" 
-                                data-target="#govIdModal{{ seller.id }}">
-                                View Gov ID
-                            </button>
-                        {% else %}
-                            No ID uploaded
-                        {% endif %}
-                    </td>
-                    <td>
-                        <form action="{{ url_for('approve_seller', user_id=seller.id) }}" method="POST" style="display:inline;">
-                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                        </form>
-                        <form action="{{ url_for('reject_seller', user_id=seller.id) }}" method="POST" style="display:inline;">
-                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
-                        </form>
-                    </td>
-                </tr>
+{% block content %}
 
-                <!-- Modal for Viewing Gov ID -->
-                {% if seller.gov_id_path %}
-                <div class="modal fade" id="govIdModal{{ seller.id }}" tabindex="-1" aria-labelledby="govIdModalLabel{{ seller.id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="govIdModalLabel{{ seller.id }}">Government ID of {{ seller.username }}</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>   
-                            </div>
-                            <div class="modal-body text-center">
-                                <img 
-                                    src="{{ url_for('static', filename=seller.gov_id_path) }}"
-                                    alt="Government ID" 
-                                    class="img-fluid" 
-                                    style="max-height: 500px;">
-                            </div>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            padding: 0;
+            max-width: none;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #2c2c44;
+            color: #ffffff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            font-size: 1.5em;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .sidebar .welcome {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #2e2e46;
+        }
+
+        .sidebar .welcome p {
+            margin: 0;
+            font-size: 1.1em;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .sidebar .divider {
+            height: 1px;
+            background-color: #3b3b57;
+            margin: 15px 0;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: #ffffff;
+            padding: 10px 15px;
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #404060;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .content-wrapper {
+            padding: 30px;
+        }
+
+        /* Header Section */
+        .header-section {
+            background: linear-gradient(135deg, #2c2c44 0%, #3b3b57 100%);
+            padding: 30px;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header-section h1 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        /* Table Container */
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        /* Table Styling */
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            background: #f8f9fc;
+            color: #2c2c44;
+            font-weight: 600;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        /* Button Styling */
+        .btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view {
+            background: #4e73df;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #2e59d9;
+            color: white;
+        }
+
+        .btn-approve {
+            background: #1cc88a;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #169b6b;
+            color: white;
+        }
+
+        .btn-reject {
+            background: #e74a3b;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #be3827;
+            color: white;
+        }
+
+        /* Modal Styling */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+
+        .modal-header {
+            background: #f8f9fc;
+            border-radius: 15px 15px 0 0;
+            padding: 20px;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-body img {
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .seller-info {
+            background: #f8f9fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .seller-info h5 {
+            color: #2c2c44;
+            margin-bottom: 15px;
+        }
+
+        .seller-info ul {
+            margin-bottom: 0;
+        }
+
+        .seller-info li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .seller-info li:last-child {
+            border-bottom: none;
+        }
+
+        /* Flash Messages */
+        .flash-messages {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .alert {
+            margin-bottom: 10px;
+            padding: 15px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+<
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-wrapper">
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="flash-messages">
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
                         </div>
-                    </div>
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Header -->
+                <div class="header-section">
+                    <h1>Pending Sellers</h1>
                 </div>
-                {% endif %}
-                {% endfor %}
-            </tbody>
-        </table>
+
+                <!-- Table Container -->
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Registration Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for seller in pending_seller %}
+                            <tr>
+                                <td>{{ seller.username }}</td>
+                                <td>{{ seller.email }}</td>
+                                <td>
+                                    <span class="badge bg-warning">Pending</span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-view btn-sm" data-bs-toggle="modal" data-bs-target="#govIdModal{{ seller.id }}">
+                                        <i class="fas fa-eye"></i> View Details
+                                    </button>
+                                    <form action="{{ url_for('approve_seller', user_id=seller.id) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn btn-approve btn-sm">
+                                            <i class="fas fa-check"></i> Approve
+                                        </button>
+                                    </form>
+                                    <form action="{{ url_for('reject_seller', user_id=seller.id) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn btn-reject btn-sm">
+                                            <i class="fas fa-times"></i> Reject
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="govIdModal{{ seller.id }}" tabindex="-1">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Seller Verification Details</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {% if seller.gov_id_path %}
+                                            <div class="text-center">
+                                                <h5>Government ID</h5>
+                                                <img src="{{ url_for('static', filename=seller.gov_id_path) }}"
+                                                     alt="Government ID" 
+                                                     class="img-fluid mb-4">
+                                            </div>
+                                            {% endif %}
+
+                                            <div class="seller-info">
+                                                <h5>Personal Information</h5>
+                                                <ul class="list-unstyled">
+                                                    <li><strong>First Name:</strong> {{ seller.first_name }}</li>
+                                                    <li><strong>Last Name:</strong> {{ seller.last_name }}</li>
+                                                    <li><strong>Email:</strong> {{ seller.email }}</li>
+                                                    <li><strong>Mobile No:</strong> {{ seller.mobile_no }}</li>
+                                                    <li><strong>Address:</strong> {{ seller.address }}</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Include Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+{% endblock %}

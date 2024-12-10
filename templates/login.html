@@ -1,40 +1,165 @@
-{% extends 'base.html' %}
-
-{% block content %}
-
-<div class="account-page">
-    <div class="container">
-        <div class="row">
-            <div class="col-2">
-                <img src="{{url_for('static',filename = 'images/image1.png')}}" width="100%">
-            </div>
-            <div class="col-2">
-                <div class="form-container">
-                    <div class="form-btn">
-                        <span onclick="login()">Login</span>
-                        <!-- <span onclick="register()">Register</span> -->
-                        <!-- <hr id="Indicator"> -->
-                    </div>
-                    <form action="{{ url_for('login') }}" method="post">  <!-- UNG SA ACTION DUN NAGREREDIRECT PAG PININDON ANG REGISTER  -->
-                        <input type="text" name="username" placeholder="Username" required>
-                        <input type="password" name="password" placeholder="Password" required>
-                        <button type="submit" class="btn">Login</button>
-                        <a href="{{ url_for('reset_request') }}">Forget Password</a>
-                        <a href="{{ url_for('register') }}" class='button'>Register here!</a>
-                    </form>
-                    <!-- <form id="RegForm" method="POST" action="/register">
-                        <input type="text" name="username" placeholder="Username" required>
-                        <input type="email" name="email" placeholder="Email" required>
-                        <input type="password" name="password" placeholder="Password" required>
-                        <button type="submit" class="btn">Register</button>
-                    </form> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Login</title>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">
+                    <a href="{{ url_for('home') }}">
+                        <img src="{{ url_for('static', filename='images/haul-logo-header.png') }}" alt="Logo">
+                    </a>
                 </div>
+                <nav>
+                    <ul>
+                        <li><a href="{{ url_for('login') }}">LOG IN</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
+    </header>
+
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </div>
-</div>
 
-{% endblock %}
+    <div class="login-container">
+        <div class="login-logo-section">
+            <img src="{{ url_for('static', filename='images/haul-logo-header.png') }}" alt="Company Logo">
+        </div>
+        <div class="login-form-section">
+            <h2 class="login-form-title">Welcome Back</h2>
+            <form action="{{ url_for('login') }}" method="post" class="login-form">
+                <label for="username" class="login-label">Username</label>
+                <input type="text" id="username" name="username" class="login-input" placeholder="Username" required pattern="[a-zA-Z0-9]+" title="Alphanumeric characters only" autofocus>
+                
+                <label for="password" class="login-label">Password</label>
+                <div class="password-field">
+                    <input type="password" id="password" name="password" class="login-input" 
+                           placeholder="Password" required autocomplete="off">
+                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                        <i class="far fa-eye"></i>
+                    </button>
+                </div>
+    
+                <button type="submit" class="login-btn" onclick="showLoading()">Login</button>
+    
+                <div class="login-links">
+                    <a href="{{ url_for('reset_request') }}">Forgot Password?</a>
+                    <a href="{{ url_for('register') }}">Register</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <style>
+        .flash-messages {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
 
+        .alert {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease-out;
+        }
 
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
 
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .password-field {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 0.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: #003449;
+        }
+    </style>
+
+    <script>
+        // function showLoading() {
+        //     const button = document.querySelector('.login-btn');
+        //     button.innerText = 'Logging in...';
+        //     button.disabled = true;
+        // }
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Auto-dismiss flash messages
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 300);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

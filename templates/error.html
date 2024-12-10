@@ -1,25 +1,319 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Not Found</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}">
+    <title>Oops! - HAUL</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #003449;
+            --primary-light: #004d6b;
+            --accent-color: #ff9f1c;
+            --text-light: #e2e8f0;
+            --white: #ffffff;
+        }
+
+        body {
+            background: var(--primary-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .error-container {
+            text-align: center;
+            max-width: 800px;
+            padding: 40px;
+            background: var(--primary-light);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .error-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--accent-color), #ffb347, var(--accent-color));
+            background-size: 200% 100%;
+            animation: gradientMove 3s linear infinite;
+        }
+
+        .logo {
+            width: 120px;
+            margin-bottom: 30px;
+            filter: brightness(0) invert(1);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .error-scene {
+            position: relative;
+            height: 200px;
+            margin: 40px 0;
+        }
+
+        .shopping-cart {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 80px;
+            color: #003449;
+            animation: cartMove 2s ease-in-out infinite;
+        }
+
+        .items {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .item {
+            position: absolute;
+            font-size: 24px;
+            animation: itemFall 1s ease-in forwards;
+            opacity: 0;
+        }
+
+        @keyframes cartMove {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            25% { transform: translateX(-80%) rotate(-5deg); }
+            75% { transform: translateX(-20%) rotate(5deg); }
+        }
+
+        @keyframes itemFall {
+            0% { 
+                transform: translateY(-50px) rotate(0deg);
+                opacity: 0;
+            }
+            100% { 
+                transform: translateY(100px) rotate(360deg);
+                opacity: 1;
+            }
+        }
+
+        .error-code {
+            font-size: 120px;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--accent-color), #ffb347);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .error-message {
+            font-size: 28px;
+            color: var(--white);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .error-description {
+            color: var(--text-light);
+            margin-bottom: 40px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: #ffb347;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 159, 28, 0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @media (max-width: 480px) {
+            .error-container {
+                padding: 30px 20px;
+            }
+
+            .error-code {
+                font-size: 80px;
+            }
+
+            .error-message {
+                font-size: 24px;
+            }
+
+            .error-scene {
+                height: 150px;
+            }
+
+            .shopping-cart {
+                font-size: 60px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-
-    <!-- <div class="background-blur"></div>
-    <div class="background-overlay"></div> -->
     <div class="error-container">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Company Logo" class="logo">
-        <h1>404</h1>
-        <p>Oops! The page you're looking for doesn't exist.</p>
-        <a href="{{ url_for('index') }}" class="btn">Go back to Home Page</a>
+        <img src="{{ url_for('static', filename='images/haul-logo-header.png') }}" alt="HAUL Logo" class="logo">
+        
+        <div class="error-scene">
+            <i class="fas fa-shopping-cart shopping-cart"></i>
+            <div class="items"></div>
+        </div>
+
+        <div class="error-code">404</div>
+        <h1 class="error-message">Oops! Lost in the Closet</h1>
+        <p class="error-description">
+            Looks like this page is hiding in someone's wardrobe! 
+    Don't worry, we've got plenty of other amazing thrifted finds waiting for you.
+        </p>
+        <div class="action-buttons">
+            {% if current_user.is_authenticated and current_user.role in ['superadmin', 'seller'] %}
+                <!-- <a href="{{ url_for('superadmin') }}" class="btn btn-primary">
+                    <i class="fas fa-home"></i>
+                    Return Home
+                </a> -->
+                <button onclick="history.back()" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Go Back
+                </button>
+            {% else %}
+                <a href="{{ url_for('home') }}" class="btn btn-primary">
+                    <i class="fas fa-home"></i>
+                    Return Home
+                </a>
+                <a href="{{ url_for('products') }}" class="btn btn-secondary">
+                    <i class="fas fa-shopping-bag"></i>
+                    Continue Shopping
+                </a>
+            {% endif %}
+        </div>
     </div>
+
+    <script>
+        // Add falling shopping items animation
+        const items = [
+        '👕', // T-shirt
+        '👔', // Dress shirt
+        '👖', // Jeans
+        '👗', // Dress
+        '🧥', // Coat
+        '👚', // Blouse
+        '👢', // Boots
+        '👟', // Sneakers
+        '🧢', // Cap
+        '👜', // Handbag
+        '🧦', // Socks
+        '🧣'  // Scarf
+    ];
+        const itemsContainer = document.querySelector('.items');
+
+        function createItem() {
+            const item = document.createElement('div');
+            item.className = 'item';
+            item.textContent = items[Math.floor(Math.random() * items.length)];
+            item.style.left = Math.random() * 100 + '%';
+            item.style.animationDelay = Math.random() * 2 + 's';
+            itemsContainer.appendChild(item);
+
+            // Remove item after animation
+            setTimeout(() => {
+                item.remove();
+            }, 2000);
+        }
+
+        // Create items periodically
+        setInterval(createItem, 1000);
+
+        // Create initial items
+        for(let i = 0; i < 3; i++) {
+            setTimeout(createItem, i * 300);
+        }
+    </script>
 </body>
 </html>
-

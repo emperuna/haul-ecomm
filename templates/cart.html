@@ -1,63 +1,383 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Cart Page -->
-<div class="small-container cart-page">
-    <h2 class="title">Your Cart</h2>
+<div class="cart-container">
+    <div class="cart-header">
+        <h1>Shopping Cart</h1>
+        <p>{{ cart_items|length }} items in your cart</p>
+    </div>
 
-    <!-- Cart Table -->
-    <table class="cart-table">
-        <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Subtotal</th>
-        </tr>
-
-        {% if cart_items %}
-            {% for item in cart_items %}
-                <tr>
-                    <td>
-                        <div class="cart-info">
-                            <!-- Product Image and Name Link to Product Details -->
-                            <a href="{{ url_for('product_details', product_id=item['product_id']) }}">
-                                <img src="{{ url_for('static', filename='uploads/products/' + item['product_image']) }}" alt="{{ item['product_name'] }}">
-                            </a>
-                            <div>
-                                <a href="{{ url_for('product_details', product_id=item['product_id']) }}">
-                                    <p>{{ item['product_name'] }}</p>
-                                </a>
-                                <small>Price: ${{ item['product_price'] }}</small>
-                                <form action="{{ url_for('remove_from_cart', cart_id=item['cart_id']) }}" method="POST" style="display:inline;">
-                                    <button type="submit" class="remove-btn">Remove</button>
-                                </form>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <input type="number" value="1" min="1" readonly>
-                    </td>
-                    <td>${{ item['product_price'] }}</td>
-                </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="3" class="empty-cart-message">Your cart is empty. <a href="{{ url_for('products') }}">Browse products</a> to add some!</td>
-            </tr>
-        {% endif %}
-    </table>
-
-    <!-- Total Price Section -->
     {% if cart_items %}
-        <div class="total-price">
-            <table>
-                <tr>
-                    <td>Total</td>
-                    <td>${{ total }}</td>
-                </tr>
-            </table>
-            <a href="#" class="btn checkout-btn">Proceed to Checkout</a>
+    <div class="cart-grid">
+        <!-- Cart Items Section -->
+        <div class="cart-items">
+            {% for item in cart_items %}
+            <div class="cart-item">
+                <div class="item-image">
+                    <a href="{{ url_for('product_details', product_id=item['product_id']) }}">
+                        <img src="{{ url_for('static', filename='uploads/products/' + item['product_image']) }}" 
+                             alt="{{ item['product_name'] }}">
+                    </a>
+                </div>
+                <div class="item-details">
+                    <div class="item-info">
+                        <a href="{{ url_for('product_details', product_id=item['product_id']) }}" class="item-name">
+                            {{ item['product_name'] }}
+                        </a>
+                        <p class="item-price">₱{{ "%.2f"|format(item['product_price']) }}</p>
+                    </div>
+                    <div class="item-actions">
+                        <div class="quantity-controls">
+                            <button class="qty-btn" onclick="updateQuantity('{{ item['cart_id'] }}', 'decrease', event)">-</button>
+                            <input type="number" value="{{ item['quantity'] }}" min="1" class="quantity-input" readonly>
+                            <button class="qty-btn" onclick="updateQuantity('{{ item['cart_id'] }}', 'increase', event)">+</button>
+                        </div>
+                        <form action="{{ url_for('remove_from_cart', cart_id=item['cart_id']) }}" method="POST">
+                            <button type="submit" class="remove-btn">
+                                <i class="fas fa-trash"></i>
+                                Remove
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
+
+        <!-- Order Summary Section -->
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <div class="summary-items">
+                <div class="summary-row">
+                    <span>Subtotal ({{ cart_items|length }} items)</span>
+                    <span>₱{{ "%.2f"|format(total) }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping Fee</span>
+                    <span>To be calculated</span>
+                </div>
+            </div>
+            <div class="summary-total">
+                <span>Total</span>
+                <span>₱{{ "%.2f"|format(total) }}</span>
+            </div>
+            <a href="{{ url_for('checkout') }}" class="checkout-btn">
+                Proceed to Checkout
+                <i class="fas fa-arrow-right"></i>
+            </a>
+            <a href="{{ url_for('products') }}" class="continue-shopping">
+                <i class="fas fa-arrow-left"></i>
+                Continue Shopping
+            </a>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="empty-cart">
+        <div class="empty-cart-content">
+            <i class="fas fa-shopping-cart"></i>
+            <h2>Your cart is empty</h2>
+            <p>Looks like you haven't added any items to your cart yet.</p>
+            <a href="{{ url_for('products') }}" class="browse-btn">Browse Products</a>
+        </div>
+    </div>
     {% endif %}
 </div>
 
+<style>
+.cart-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.cart-header {
+    margin-bottom: 30px;
+}
+
+.cart-header h1 {
+    color: #003449;
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+.cart-header p {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.cart-grid {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 30px;
+}
+
+.cart-items {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.cart-item {
+    display: flex;
+    padding: 20px;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.item-image {
+    width: 120px;
+    height: 120px;
+    margin-right: 20px;
+}
+
+.item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.item-details {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+}
+
+.item-info {
+    flex: 1;
+}
+
+.item-name {
+    color: #003449;
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.item-price {
+    color: #333;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 8px 0;
+}
+
+.item-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-end;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.qty-btn {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.qty-btn:hover {
+    background: #f8fafc;
+}
+
+.quantity-input {
+    width: 50px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 5px;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: #dc2626;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    padding: 5px;
+}
+
+.remove-btn:hover {
+    color: #b91c1c;
+}
+
+.order-summary {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    height: fit-content;
+}
+
+.order-summary h2 {
+    color: #003449;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+}
+
+.summary-items {
+    margin-bottom: 20px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    color: #666;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 15px;
+    border-top: 2px solid #edf2f7;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #003449;
+}
+
+.checkout-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background: #003449;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.checkout-btn:hover {
+    background: #002436;
+    transform: translateY(-2px);
+}
+
+.continue-shopping {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    text-decoration: none;
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.empty-cart i {
+    font-size: 3rem;
+    color: #cbd5e1;
+    margin-bottom: 20px;
+}
+
+.empty-cart h2 {
+    color: #003449;
+    margin-bottom: 10px;
+}
+
+.empty-cart p {
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.browse-btn {
+    display: inline-block;
+    background: #003449;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.browse-btn:hover {
+    background: #002436;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 968px) {
+    .cart-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .item-details {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .item-actions {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .cart-item {
+        flex-direction: column;
+    }
+    
+    .item-image {
+        width: 100%;
+        height: 200px;
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    .item-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .quantity-controls {
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+function updateQuantity(cartId, action) {
+    const input = event.target.parentElement.querySelector('.quantity-input');
+    let value = parseInt(input.value);
+    
+    if (action === 'increase') {
+        value++;
+    } else if (action === 'decrease' && value > 1) {
+        value--;
+    }
+    
+    input.value = value;
+    // Add AJAX call here to update quantity in backend
+}
+</script>
 {% endblock %}

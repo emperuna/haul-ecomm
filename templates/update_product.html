@@ -47,7 +47,7 @@
             <div class="form-group">
                 <label for="product-image">Image</label>
                 <input type="file" id="product-image" name="product-image">
-                <p>Current Image: <img src="{{ url_for('static', filename='uploads/' ~ product.product_image) }}" width="100"></p>
+                <p>Current Image: <img src="{{ url_for('static', filename='uploads/products/' + product.product_image) }}" width="100"></p>
             </div>
             <button type="submit" class="btn">Update Product</button>
         </form>
