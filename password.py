@@ -7,5 +7,5 @@ from werkzeug.utils import secure_filename
 import os
 from functools import wraps
 
-hashed_password = generate_password_hash('admin123')
+hashed_password = generate_password_hash('rossuser')
 print(hashed_password)

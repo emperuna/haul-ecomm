@@ -80,13 +80,13 @@
             </div>
             <div class="seller-content">
                 <div class="seller-profile">
-                    {% if seller['profile_picture'] and seller['profile_picture'] != '(NULL)' %}
+                    <!-- {% if seller['profile_picture'] and seller['profile_picture'] != '(NULL)' %}
                         <img src="{{ url_for('static', filename='uploads/profile/' + seller['profile_picture']) }}" 
-                             alt="Seller Profile Picture">
-                    {% else %}
-                        <img src="{{ url_for('static', filename='uploads/default.png') }}" 
+                             alt="Seller Profile Picture"> -->
+                    <!-- {% else %} -->
+                        <img src="{{ url_for('static', filename='uploads/profile/' + (seller.profile_picture if seller.profile_picture else 'default.png')) }}" 
                              alt="Default Profile Picture">
-                    {% endif %}
+                    <!-- {% endif %} -->
                 </div>
                 <div class="seller-info">
                     <h3 class="seller-name">{{ seller['shop_name'] }}</h3>

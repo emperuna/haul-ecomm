@@ -509,6 +509,8 @@ def home():
 
 @app.route('/products')
 def products():
+    if current_user.is_authenticated and current_user.role == 'superadmin':
+        abort(404)
     search = request.args.get('search', '')
     category = request.args.get('category', '')
     subcategory = request.args.get('subcategory', '')  # New subcategory filter
@@ -522,6 +524,11 @@ def products():
     query = "SELECT * FROM products WHERE product_status = 'active'"
     filters = []
     values = []
+
+    # Check if the user is authenticated and is a seller
+    if current_user.is_authenticated and current_user.role == 'seller':
+        filters.append("seller_id != %s")
+        values.append(current_user.id)
 
     # Apply search filter
     if search:
@@ -1535,6 +1542,8 @@ def seller():
 @app.route('/seller-registration', methods=['GET', 'POST'])
 @login_required
 def seller_registration():
+    if current_user.is_authenticated and current_user.role == 'superadmin':
+        abort(404)
     # Fetch the current user's latest data from the database
     connection = create_connection()
     if connection is None:
@@ -1727,6 +1736,8 @@ def seller_registration():
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
+    if current_user.is_authenticated and current_user.role == 'superadmin':
+        abort(404)
     # Fetch current user data
     connection = create_connection()
     cursor = connection.cursor(dictionary=True)

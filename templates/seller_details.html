@@ -224,7 +224,7 @@
     <div class="seller-container">
         <!-- Seller Header -->
         <div class="seller-header">
-            <img src="{{ url_for('static', filename='uploads/profile/' + seller.profile_picture) }}" 
+            <img src="{{ url_for('static', filename='uploads/profile/' + (seller.profile_picture if seller.profile_picture else 'default.png')) }}" 
                  alt="Seller Profile" class="profile-pic">
             <div class="seller-info">
                 <h1>{{ seller.shop_name }}</h1>
@@ -286,7 +286,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <span class="review-date">{{ review.created_at.strftime('%B %d, %Y') }}</span>
                             </div>
                             <p>{{ review.review }}</p>
                         </div>
